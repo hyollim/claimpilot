@@ -99,6 +99,7 @@ def analysis_screen(batches,display_names,fraction):
     listing=batches.list_batches()
     if listing:
         st.markdown('#### 저장된 분석 배치')
+        st.caption('누적 한도: 50개 배치 또는 JSON payload 50 MiB. 한도 도달 시 기존 기록을 자동 삭제하지 않고 추가 저장을 거부합니다.')
         st.dataframe(pd.DataFrame(listing)[['batch_id','name','source_kind','n','created_at']].rename(columns={'batch_id':'배치 ID','name':'자료명','source_kind':'자료 출처','n':'건수','created_at':'생성 시각 (UTC)'}),hide_index=True,width='stretch')
 
 

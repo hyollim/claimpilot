@@ -99,3 +99,33 @@ def test_real_model_new_claims():
     result=score_claims(read_claim_csv((root/'resources/demo_claims.csv').read_bytes()),bundle)
     assert len(result.rows)==6 and result.metadata['missing_cells']==2 and result.metadata['unseen_cells']==1
     assert not {'label','FraudFound_P'}&set(result.rows)
+
+@pytest.mark.parametrize('column,value',[('WeekOfMonth','1.0000000000000001'),('Deductible','300.00000000000000001'),('Deductible','1e10000')])
+def test_decimal_precision_not_rounded(bundle,claims,column,value):
+    claims.loc[0,column]=value
+    with pytest.raises(InputValidationError):validate_claims(claims,bundle['categories'])
+
+def test_nullable_and_categorical_frames(bundle,claims):
+    claims['WeekOfMonth']=pd.Series([1]*6,dtype='Int64')
+    claims['Make']=pd.Categorical(['a',None,'a','a','a','a'])
+    clean,issues=validate_claims(claims,bundle['categories'])
+    assert clean.WeekOfMonth.tolist()==['1']*6 and clean.loc[1,'Make']=='__MISSING__'
+    claims['claim_id']=claims.claim_id.astype(object);claims.at[0,'claim_id']=['A','B']
+    with pytest.raises(InputValidationError):validate_claims(claims,bundle['categories'])
+
+def test_nonfinite_background_rejected(bundle,claims):
+    bundle['background_mean'][0]=np.nan
+    with pytest.raises(ValueError,match='비유한'):score_claims(claims,bundle)
+
+def test_storage_capacity_never_deletes(bundle,claims,tmp_path,monkeypatch):
+    import claimpilot.intake as intake
+    monkeypatch.setattr(intake,'MAX_BATCHES',1)
+    store=BatchStore(tmp_path/'capacity.sqlite');a=score_claims(claims,bundle)
+    store.save(a,'first','synthetic');store.save(a,'duplicate','synthetic')
+    claims.loc[0,'Make']='b';b=score_claims(claims,bundle)
+    with pytest.raises(ValueError,match='저장 한도'):store.save(b,'second','synthetic')
+    assert len(store.list_batches())==1 and store.load(a.batch_id)['name']=='first'
+    monkeypatch.setattr(intake,'MAX_BATCHES',50);monkeypatch.setattr(intake,'MAX_PAYLOAD_BYTES',1)
+    empty=BatchStore(tmp_path/'bytes.sqlite')
+    with pytest.raises(ValueError,match='저장 한도'):empty.save(a,'oversize','synthetic')
+    assert empty.list_batches()==[]

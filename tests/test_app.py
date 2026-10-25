@@ -77,3 +77,21 @@ def test_dynamic_budget_does_not_use_new_labels(app):
     next(s for s in app.slider if s.label=='우선 검토 비율 (%)').set_value(10).run()
     assert not app.exception
     assert any('309건 검토 / 39건 포집' in m.value for m in app.markdown)
+
+
+def test_filters_do_not_leak_between_datasets(app):
+    if not (ROOT/'models/inference_bundle.joblib').exists():pytest.skip('추론 번들 필요')
+    next(r for r in app.radio if r.label=='업무 메뉴').set_value('청구 데이터 분석').run()
+    next(b for b in app.button if b.label=='합성 시연 6건 분석').click().run()
+    next(b for b in app.button if b.label=='이 배치 상세 검토').click().run()
+    batch=next(s for s in app.selectbox if s.label=='검토 자료').value
+    next(s for s in app.selectbox if s.label=='검토 자료').set_value('mvp').run()
+    next(t for t in app.text_input if t.label=='청구 ID 검색').set_value('3520').run()
+    # 메뉴를 떠나지 않고 같은 화면에서 dataset만 전환한다.
+    next(s for s in app.selectbox if s.label=='검토 자료').set_value(batch).run()
+    assert not app.exception
+    assert next(t for t in app.text_input if t.label=='청구 ID 검색').value==''
+    assert next(s for s in app.selectbox if s.label=='상세 조회할 청구 ID').value.startswith('DEMO-')
+    next(t for t in app.text_input if t.label=='청구 ID 검색').set_value('DEMO-001').run()
+    next(s for s in app.selectbox if s.label=='검토 자료').set_value('mvp').run()
+    assert next(t for t in app.text_input if t.label=='청구 ID 검색').value==''

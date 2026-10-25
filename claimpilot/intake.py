@@ -6,6 +6,9 @@ from datetime import datetime,timezone
 from pathlib import Path
 import pandas as pd
 
+MAX_BATCHES=50
+MAX_PAYLOAD_BYTES=50*1024*1024
+
 class BatchStore:
     def __init__(self,path):
         self.path=str(path); Path(self.path).parent.mkdir(parents=True,exist_ok=True)
@@ -21,11 +24,16 @@ class BatchStore:
         if not isinstance(name,str) or not 1<=len(name)<=200: raise ValueError('배치명은 1~200자입니다.')
         if any(c in result.rows for c in ['label','FraudFound_P','fraud_reported']): raise ValueError('정답 라벨 저장 금지')
         now=datetime.now(timezone.utc).isoformat()
+        payload=(result.rows.to_json(orient='records',force_ascii=False),json.dumps(result.explanations,ensure_ascii=False),json.dumps(result.issues,ensure_ascii=False),json.dumps(result.metadata,ensure_ascii=False))
+        payload_size=sum(len(p.encode('utf-8')) for p in payload)
         # 동일 내용 재업로드는 기존 배치·담당자 기록을 보존한다. 이름/출처를 바꾸어 덮어쓰지 않는다.
         with closing(self._connect()) as conn,conn:
-            conn.execute('''INSERT OR IGNORE INTO batches VALUES (?,?,?,?,?,?,?,?)''',
-             (result.batch_id,name,source_kind,now,result.rows.to_json(orient='records',force_ascii=False),
-              json.dumps(result.explanations,ensure_ascii=False),json.dumps(result.issues,ensure_ascii=False),json.dumps(result.metadata,ensure_ascii=False)))
+            conn.execute('BEGIN IMMEDIATE')
+            if conn.execute('SELECT 1 FROM batches WHERE batch_id=?',(result.batch_id,)).fetchone():return result.batch_id
+            count,size=conn.execute('SELECT COUNT(*), COALESCE(SUM(length(CAST(rows_json AS BLOB))+length(CAST(explanations_json AS BLOB))+length(CAST(issues_json AS BLOB))+length(CAST(metadata_json AS BLOB))),0) FROM batches').fetchone()
+            if count>=MAX_BATCHES or size+payload_size>MAX_PAYLOAD_BYTES:
+                raise ValueError('배치 저장 한도(50개 또는 payload 50 MiB)에 도달했습니다. 기존 기록은 삭제하지 않습니다. 백업·정리는 사용자 확인 후 진행하세요.')
+            conn.execute('INSERT INTO batches VALUES (?,?,?,?,?,?,?,?)',(result.batch_id,name,source_kind,now,*payload))
         return result.batch_id
     def list_batches(self):
         with closing(self._connect()) as conn:

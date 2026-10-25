@@ -6,6 +6,7 @@ import json
 import math
 import re
 from dataclasses import dataclass
+from decimal import Decimal, InvalidOperation
 from pathlib import Path
 
 import joblib
@@ -66,9 +67,12 @@ def validate_claims(df, categories):
     if df.columns.duplicated().any(): issue('error',None,'schema','중복 열 이름')
     if not 1<=len(df)<=MAX_ROWS: issue('error',None,'schema','입력은 1~5,000행이어야 합니다.')
     if issues: raise InputValidationError(issues)
-    clean=df[COLUMNS].copy().reset_index(drop=True)
+    clean=df[COLUMNS].astype(object).copy().reset_index(drop=True)
     for i,row in clean.iterrows():
-        rid=row['claim_id']; rid='' if pd.isna(rid) else str(rid).strip()
+        rid=row['claim_id']
+        if not pd.api.types.is_scalar(rid):
+            issue('error',i+2,'claim_id','청구 ID는 단일 문자열이어야 합니다.'); rid=''
+        rid='' if pd.isna(rid) else str(rid).strip()
         if not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9_.-]{0,63}',rid):
             issue('error',i+2,'claim_id','청구 ID는 영문/숫자로 시작하는 1~64자 영문·숫자·_.- 조합이어야 합니다.')
         clean.at[i,'claim_id']=rid
@@ -87,12 +91,12 @@ def validate_claims(df, categories):
                 issue('error',i+2,column,'입력값은 제어문자 없는 128자 이하여야 합니다.'); continue
             if column in NUMERIC:
                 try:
-                    number=float(value)
+                    number=Decimal(value)
                     low,high=NUMERIC[column]
-                    if not math.isfinite(number) or not number.is_integer() or number<low or (high is not None and number>high):
+                    if not number.is_finite() or number!=number.to_integral_value() or number<low or (high is not None and number>high) or number.adjusted()>127:
                         raise ValueError()
                     value=str(int(number))
-                except (ValueError,OverflowError):
+                except (ValueError,OverflowError,InvalidOperation):
                     issue('error',i+2,column,'스키마 숫자 형식/범위 오류: 정수 '+('1~5' if column.startswith('Week') else '0 이상'))
                     continue
             clean.at[i,column]=value; present+=1
@@ -118,7 +122,8 @@ def shap_explanations(X,bundle):
         import shap
         encoder=model.named_steps['encode']; clf=model.named_steps['clf']
         encoded=encoder.transform(X)
-        mean=np.asarray(bundle['background_mean'])
+        mean=np.asarray(bundle['background_mean'],dtype=float)
+        if not np.isfinite(mean).all():raise ValueError('SHAP 배경 평균에 비유한 값이 있습니다.')
         explainer=shap.LinearExplainer(clf,(mean,np.zeros((len(mean),len(mean)))))
         values=np.asarray(explainer.shap_values(encoded))
         offsets=np.cumsum([0]+[len(cat) for cat in encoder.categories_])
@@ -128,6 +133,8 @@ def shap_explanations(X,bundle):
         from catboost import Pool
         values=model.get_feature_importance(Pool(X,cat_features=FEATURES),type='ShapValues')
         contrib=values[:,:-1]; bases=values[:,-1]; raw=model.predict(X,prediction_type='RawFormulaVal')
+    if not all(np.isfinite(a).all() for a in (contrib,bases,raw)):
+        raise ValueError('SHAP 기여도·기준값·원점수에 비유한 값이 있습니다.')
     if np.max(np.abs(contrib.sum(axis=1)+bases-raw))>1e-7:
         raise ValueError('SHAP 합계 검증에 실패했습니다.')
     explanations=[]
@@ -150,7 +157,8 @@ def score_claims(df,bundle,review_fraction=.2):
     digest=hashlib.sha256((bundle['model_fingerprint']+clean.to_json(orient='records',force_ascii=False)).encode()).hexdigest()[:16]
     rows=clean.copy(); rows['risk_score']=scores
     rows['record_id']=['new:'+digest+':'+cid for cid in rows.claim_id]
-    rows['validation_status']=['자료 보완 필요' if any(t['row']==i+2 for t in issues) else '형식 확인' for i in range(len(rows))]
+    warning_rows={t['row'] for t in issues}
+    rows['validation_status']=['자료 보완 필요' if i+2 in warning_rows else '형식 확인' for i in range(len(rows))]
     rows=rows.sort_values('risk_score',ascending=False,kind='stable').reset_index(drop=True)
     rows['priority_rank']=np.arange(1,len(rows)+1)
     rows['review_band']=np.where(rows.priority_rank<=math.ceil(len(rows)*review_fraction),'우선 검토','일반 검토')

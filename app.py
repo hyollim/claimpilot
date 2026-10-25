@@ -61,7 +61,7 @@ def _score(value):
     return f"{float(value):.4f}"
 
 
-def _review_screen(raw, explanations, store):
+def _review_screen(raw, explanations, store, namespace="mvp"):
     # 원본 라벨을 포함하는 프레임은 이 함수 내 표시 경로에서 즉시 제거한다.
     allowed = set(FEATURES + ["claim_id", "record_id", "risk_score", "priority_rank", "review_band", "validation_status"])
     claims = raw.loc[:, [column for column in raw.columns if column in allowed and not _sensitive(column)]].copy()
@@ -70,15 +70,15 @@ def _review_screen(raw, explanations, store):
     claims["status"] = record_keys.map(lambda cid: saved.get(str(cid), {}).get("status", "미검토"))
     with st.sidebar:
         st.header("검토 대상 필터")
-        query = st.text_input("청구 ID 검색", max_chars=128)
-        bands = st.multiselect("우선순위 구간", sorted(claims["review_band"].dropna().unique()))
-        statuses = st.multiselect("검토 상태", list(STATUSES))
+        query = st.text_input("청구 ID 검색", max_chars=128, key=f"{namespace}_query")
+        bands = st.multiselect("우선순위 구간", sorted(claims["review_band"].dropna().unique()), key=f"{namespace}_bands")
+        statuses = st.multiselect("검토 상태", list(STATUSES), key=f"{namespace}_statuses")
         low, high = float(claims.risk_score.min()), float(claims.risk_score.max())
         if low < high:
-            score_range = st.slider("모델 점수 범위 (확률 아님)", low, high, (low, high), format="%.4f")
+            score_range = st.slider("모델 점수 범위 (확률 아님)", low, high, (low, high), format="%.4f", key=f"{namespace}_score")
         else:
             score_range = (low, high)
-        display_limit = st.selectbox("목록 최대 표시 건수", [20, 50, 100, 500], index=1)
+        display_limit = st.selectbox("목록 최대 표시 건수", [20, 50, 100, 500], index=1, key=f"{namespace}_limit")
         st.caption("필터는 현재 검토 배치에만 적용됩니다. 성능 평가는 별도의 고정 test 기준입니다.")
     filtered = claims[claims.risk_score.between(*score_range)]
     if query.strip():
@@ -106,7 +106,7 @@ def _review_screen(raw, explanations, store):
         return
     if len(filtered) > display_limit:
         st.caption(f"{len(filtered):,}건 중 {display_limit:,}건 표시. 상세 선택은 전체 필터 결과에서 가능합니다.")
-    selected = st.selectbox("상세 조회할 청구 ID", filtered.claim_id.tolist())
+    selected = st.selectbox("상세 조회할 청구 ID", filtered.claim_id.tolist(), key=f"{namespace}_selected")
     current = filtered[filtered.claim_id == selected].iloc[0]
     record_key = str(current.get("record_id", selected))
     record = store.get(record_key, CHECKLIST)
@@ -300,7 +300,7 @@ def main():
         if selected_rows.empty:
             st.info('검토할 청구가 없습니다. 청구 데이터 분석 메뉴에서 CSV 또는 합성 시연을 분석하세요.')
         else:
-            _review_screen(selected_rows,selected_explanations,store)
+            _review_screen(selected_rows,selected_explanations,store,dataset)
     elif menu=='모델 성능 및 업무 효과':
         effects_screen(raw,metrics,percentage/100)
         st.divider()
