@@ -85,7 +85,7 @@ def main(argv=None):
                    evaluation_note='label 평가 전용; production 무라벨 신규 데이터 적용 불가; 비용 환산 없음; 합성 성과 미사용')
     records = [dict(**context, **point) for point in report['budgets']]
     with out_csv.open('w', newline='', encoding='utf-8') as stream:
-        writer = csv.DictWriter(stream, fieldnames=list(records[0]))
+        writer = csv.DictWriter(stream, fieldnames=list(records[0]), lineterminator="\n")
         writer.writeheader()
         writer.writerows(records)
     out_json.write_text(json.dumps(report, ensure_ascii=False, indent=2, allow_nan=False) + '\n', encoding='utf-8')

@@ -1,0 +1,1627 @@
+{
+  "scope": "기존 짧은 8개 발췌만 고정 사용. KB 절차 4개와 KNIA 안내 4개. 새 출처 후보와 혼합하지 않음.",
+  "gold_provenance": "검색 구현·실행 전에 수작업으로 작성한 자율합성 질의입니다. 외부 독립 gold가 아닙니다. 개발 8개/고정평가 12개/관련 발췌 없는 질문 4개를 사전 명시합니다. 고정평가 결과를 본 뒤 파라미터를 변경하지 않습니다.",
+  "split_policy": "문서 ID는 개발/평가 간 공유하며 질의만 분리합니다. 8문서의 표현 바꾸기 내부 점검으로, 독립 문서·실사용 검색 품질 평가가 아닙니다.",
+  "gold_evidence": [
+    {
+      "id": "kb-auto-report-phone",
+      "url": "https://www.kbinsure.co.kr/CG212020003.ecs",
+      "section": "이용가이드 > 자동차사고접수 > 전화 접수 안내",
+      "quote": "빠른 접수를 이용하기 위해서는 고객콜센터(1544-0114)로 전화를 통해 접수하실 수 있습니다."
+    },
+    {
+      "id": "kb-auto-online-steps",
+      "url": "https://www.kbinsure.co.kr/CG212020001.ecs",
+      "section": "진행순서 > Step 01~04",
+      "quote": "개인정보 처리동의\n사고내용 입력\n청구내용 입력\n접수완료"
+    },
+    {
+      "id": "kb-auto-report-sms",
+      "url": "https://www.kbinsure.co.kr/CG212020003.ecs",
+      "section": "이용안내 > 첫 번째 항목 첫 문장",
+      "quote": "사고접수가 완료되면, 접수번호 및 보상처리 담당자사항을 SMS로 전송해드립니다."
+    },
+    {
+      "id": "kb-auto-progress-lookup",
+      "url": "https://www.kbinsure.co.kr/CG212020001.ecs",
+      "section": "이용안내 > 유의사항 > 보상처리 내역 및 담당자 조회 항목",
+      "quote": "보상처리 내역 및 담당자는 [보상진행/결과조회]에서 확인하실 수 있습니다."
+    },
+    {
+      "id": "knia-find-standard",
+      "url": "https://accident.knia.or.kr/fault-ratio",
+      "section": "사고상황 선택하여 찾기 > 소개 문장",
+      "quote": "사고 유형과 세부 상황을 단계별로 선택하여 과실비율 인정기준을 빠르게 찾아볼 수 있습니다."
+    },
+    {
+      "id": "knia-standard-no-binding-force",
+      "url": "https://accident.knia.or.kr/index",
+      "section": "효력 > 첫 번째 문단 첫 문장",
+      "quote": "과실비율 인정기준은 법적인 구속력은 없고 참고자료에 해당합니다."
+    },
+    {
+      "id": "knia-standard-unilateral-claim-limit",
+      "url": "https://accident.knia.or.kr/index",
+      "section": "효력 > 두 번째 문단 첫 문장",
+      "quote": "하지만 분쟁은 양 당사자가 인정하는 비율이 달라 발생하는 것으로 일방 사고 당사자의 주장만으로는 과실비율을 결정할 수 없습니다."
+    },
+    {
+      "id": "knia-standard-revision-process",
+      "url": "https://accident.knia.or.kr/index",
+      "section": "개정 절차 > 첫 문단",
+      "quote": "법령의 개정, 교통 환경 및 사회통념의 변화 등으로 개정 수요가 발생하면 전문가의 심층 검토와 사회 각계각층의 의견수렴을 거쳐 개정됩니다."
+    }
+  ],
+  "configuration": {
+    "python": "3.9.6",
+    "implementation": "stdlib",
+    "source_sha256": "393c690c7cd37049b78e606e784332b786fac94b948c03f253bf9d20bcaf928b",
+    "queries_sha256": "80c912f1170ead28ba25c68970c286a71fbca45b07781887076be9783cc746ed",
+    "source_count": 8,
+    "source_ids": [
+      "kb-auto-report-phone",
+      "kb-auto-online-steps",
+      "kb-auto-report-sms",
+      "kb-auto-progress-lookup",
+      "knia-find-standard",
+      "knia-standard-no-binding-force",
+      "knia-standard-unilateral-claim-limit",
+      "knia-standard-revision-process"
+    ],
+    "ngram_range": [
+      2,
+      4
+    ],
+    "word_boundary_crossing": false,
+    "k1": 1.2,
+    "b": 0.75,
+    "field_weights": {
+      "title": 3,
+      "organization": 2,
+      "section": 2,
+      "text": 1
+    },
+    "query_ngram_deduplication": true,
+    "selected_threshold": 24,
+    "default_api_threshold": 0,
+    "selection_data": "development 8 answerable + 2 separately declared no-answer only",
+    "threshold_candidates": [
+      0,
+      0.25,
+      0.5,
+      1,
+      2,
+      3,
+      4,
+      6,
+      8,
+      12,
+      16,
+      24,
+      32,
+      48,
+      64
+    ],
+    "objective": "0.5 * mean(Recall@3, MRR@3, nDCG@3) + 0.5 * no-answer specificity; ties choose lower threshold",
+    "evaluation_used_for_tuning": false,
+    "metric_definitions": {
+      "recall_at_3": "macro relevant IDs retrieved / total relevant IDs",
+      "mrr_at_3": "macro reciprocal first relevant rank; absent=0",
+      "ndcg_at_3": "binary relevance DCG / ideal DCG, log2 discount",
+      "no_answer_false_positive_rate": "fraction of no-answer questions returning any document"
+    }
+  },
+  "threshold_selection_trials_development_only": [
+    {
+      "threshold": 0,
+      "objective": 0.4637887397321441,
+      "recall_at_3": 1.0,
+      "mrr_at_3": 0.875,
+      "ndcg_at_3": 0.9077324383928644,
+      "answerable_count": 8,
+      "no_answer_count": 2,
+      "no_answer_false_positive_count": 2,
+      "no_answer_false_positive_rate": 1.0
+    },
+    {
+      "threshold": 0.25,
+      "objective": 0.4637887397321441,
+      "recall_at_3": 1.0,
+      "mrr_at_3": 0.875,
+      "ndcg_at_3": 0.9077324383928644,
+      "answerable_count": 8,
+      "no_answer_count": 2,
+      "no_answer_false_positive_count": 2,
+      "no_answer_false_positive_rate": 1.0
+    },
+    {
+      "threshold": 0.5,
+      "objective": 0.4637887397321441,
+      "recall_at_3": 1.0,
+      "mrr_at_3": 0.875,
+      "ndcg_at_3": 0.9077324383928644,
+      "answerable_count": 8,
+      "no_answer_count": 2,
+      "no_answer_false_positive_count": 2,
+      "no_answer_false_positive_rate": 1.0
+    },
+    {
+      "threshold": 1,
+      "objective": 0.4637887397321441,
+      "recall_at_3": 1.0,
+      "mrr_at_3": 0.875,
+      "ndcg_at_3": 0.9077324383928644,
+      "answerable_count": 8,
+      "no_answer_count": 2,
+      "no_answer_false_positive_count": 2,
+      "no_answer_false_positive_rate": 1.0
+    },
+    {
+      "threshold": 2,
+      "objective": 0.4637887397321441,
+      "recall_at_3": 1.0,
+      "mrr_at_3": 0.875,
+      "ndcg_at_3": 0.9077324383928644,
+      "answerable_count": 8,
+      "no_answer_count": 2,
+      "no_answer_false_positive_count": 2,
+      "no_answer_false_positive_rate": 1.0
+    },
+    {
+      "threshold": 3,
+      "objective": 0.41939436986607204,
+      "recall_at_3": 0.875,
+      "mrr_at_3": 0.8125,
+      "ndcg_at_3": 0.8288662191964322,
+      "answerable_count": 8,
+      "no_answer_count": 2,
+      "no_answer_false_positive_count": 2,
+      "no_answer_false_positive_rate": 1.0
+    },
+    {
+      "threshold": 4,
+      "objective": 0.41939436986607204,
+      "recall_at_3": 0.875,
+      "mrr_at_3": 0.8125,
+      "ndcg_at_3": 0.8288662191964322,
+      "answerable_count": 8,
+      "no_answer_count": 2,
+      "no_answer_false_positive_count": 2,
+      "no_answer_false_positive_rate": 1.0
+    },
+    {
+      "threshold": 6,
+      "objective": 0.41939436986607204,
+      "recall_at_3": 0.875,
+      "mrr_at_3": 0.8125,
+      "ndcg_at_3": 0.8288662191964322,
+      "answerable_count": 8,
+      "no_answer_count": 2,
+      "no_answer_false_positive_count": 2,
+      "no_answer_false_positive_rate": 1.0
+    },
+    {
+      "threshold": 8,
+      "objective": 0.41939436986607204,
+      "recall_at_3": 0.875,
+      "mrr_at_3": 0.8125,
+      "ndcg_at_3": 0.8288662191964322,
+      "answerable_count": 8,
+      "no_answer_count": 2,
+      "no_answer_false_positive_count": 2,
+      "no_answer_false_positive_rate": 1.0
+    },
+    {
+      "threshold": 12,
+      "objective": 0.29439436986607204,
+      "recall_at_3": 0.625,
+      "mrr_at_3": 0.5625,
+      "ndcg_at_3": 0.5788662191964322,
+      "answerable_count": 8,
+      "no_answer_count": 2,
+      "no_answer_false_positive_count": 2,
+      "no_answer_false_positive_rate": 1.0
+    },
+    {
+      "threshold": 16,
+      "objective": 0.544394369866072,
+      "recall_at_3": 0.625,
+      "mrr_at_3": 0.5625,
+      "ndcg_at_3": 0.5788662191964322,
+      "answerable_count": 8,
+      "no_answer_count": 2,
+      "no_answer_false_positive_count": 1,
+      "no_answer_false_positive_rate": 0.5
+    },
+    {
+      "threshold": 24,
+      "objective": 0.625,
+      "recall_at_3": 0.25,
+      "mrr_at_3": 0.25,
+      "ndcg_at_3": 0.25,
+      "answerable_count": 8,
+      "no_answer_count": 2,
+      "no_answer_false_positive_count": 0,
+      "no_answer_false_positive_rate": 0.0
+    },
+    {
+      "threshold": 32,
+      "objective": 0.5,
+      "recall_at_3": 0.0,
+      "mrr_at_3": 0.0,
+      "ndcg_at_3": 0.0,
+      "answerable_count": 8,
+      "no_answer_count": 2,
+      "no_answer_false_positive_count": 0,
+      "no_answer_false_positive_rate": 0.0
+    },
+    {
+      "threshold": 48,
+      "objective": 0.5,
+      "recall_at_3": 0.0,
+      "mrr_at_3": 0.0,
+      "ndcg_at_3": 0.0,
+      "answerable_count": 8,
+      "no_answer_count": 2,
+      "no_answer_false_positive_count": 0,
+      "no_answer_false_positive_rate": 0.0
+    },
+    {
+      "threshold": 64,
+      "objective": 0.5,
+      "recall_at_3": 0.0,
+      "mrr_at_3": 0.0,
+      "ndcg_at_3": 0.0,
+      "answerable_count": 8,
+      "no_answer_count": 2,
+      "no_answer_false_positive_count": 0,
+      "no_answer_false_positive_rate": 0.0
+    }
+  ],
+  "development": {
+    "substring_baseline": {
+      "metrics": {
+        "recall_at_3": 0.75,
+        "mrr_at_3": 0.6875,
+        "ndcg_at_3": 0.7038662191964322,
+        "answerable_count": 8,
+        "no_answer_count": 2,
+        "no_answer_false_positive_count": 2,
+        "no_answer_false_positive_rate": 1.0
+      },
+      "questions": [
+        {
+          "id": "D01",
+          "query": "자동차 사고 전화 접수 번호는?",
+          "relevant_ids": [
+            "kb-auto-report-phone"
+          ],
+          "retrieved_ids": [
+            "kb-auto-report-phone",
+            "kb-auto-report-sms",
+            "kb-auto-online-steps"
+          ],
+          "scores": [
+            29.231203,
+            17.112564,
+            16.082944
+          ],
+          "recall_at_3": 1.0,
+          "mrr_at_3": 1.0,
+          "ndcg_at_3": 1.0
+        },
+        {
+          "id": "D02",
+          "query": "온라인 사고접수 진행 순서는?",
+          "relevant_ids": [
+            "kb-auto-online-steps"
+          ],
+          "retrieved_ids": [
+            "kb-auto-online-steps",
+            "kb-auto-report-phone",
+            "kb-auto-progress-lookup"
+          ],
+          "scores": [
+            5.861447,
+            5.148097,
+            4.475153
+          ],
+          "recall_at_3": 1.0,
+          "mrr_at_3": 1.0,
+          "ndcg_at_3": 1.0
+        },
+        {
+          "id": "D03",
+          "query": "접수 완료 시 문자로 보내는 정보는?",
+          "relevant_ids": [
+            "kb-auto-report-sms"
+          ],
+          "retrieved_ids": [
+            "kb-auto-report-phone",
+            "kb-auto-report-sms",
+            "kb-auto-online-steps"
+          ],
+          "scores": [
+            12.355433,
+            9.62325,
+            8.59363
+          ],
+          "recall_at_3": 1.0,
+          "mrr_at_3": 0.5,
+          "ndcg_at_3": 0.6309297535714575
+        },
+        {
+          "id": "D04",
+          "query": "보상진행과 담당자 조회 위치는?",
+          "relevant_ids": [
+            "kb-auto-progress-lookup"
+          ],
+          "retrieved_ids": [
+            "kb-auto-progress-lookup",
+            "kb-auto-report-sms"
+          ],
+          "scores": [
+            9.273127,
+            1.386294
+          ],
+          "recall_at_3": 1.0,
+          "mrr_at_3": 1.0,
+          "ndcg_at_3": 1.0
+        },
+        {
+          "id": "D05",
+          "query": "사고상황별 과실비율 인정기준 찾는 방법은?",
+          "relevant_ids": [
+            "knia-find-standard"
+          ],
+          "retrieved_ids": [
+            "knia-standard-no-binding-force",
+            "knia-standard-unilateral-claim-limit",
+            "knia-standard-revision-process"
+          ],
+          "scores": [
+            8.236955,
+            7.207336,
+            6.177717
+          ],
+          "recall_at_3": 0.0,
+          "mrr_at_3": 0.0,
+          "ndcg_at_3": 0.0
+        },
+        {
+          "id": "D06",
+          "query": "과실비율 인정기준의 법적 효력은?",
+          "relevant_ids": [
+            "knia-standard-no-binding-force"
+          ],
+          "retrieved_ids": [
+            "knia-standard-no-binding-force",
+            "knia-find-standard",
+            "knia-standard-unilateral-claim-limit"
+          ],
+          "scores": [
+            5.823226,
+            4.118478,
+            4.118478
+          ],
+          "recall_at_3": 1.0,
+          "mrr_at_3": 1.0,
+          "ndcg_at_3": 1.0
+        },
+        {
+          "id": "D07",
+          "query": "한쪽 주장만으로 과실비율 결정 가능한가요?",
+          "relevant_ids": [
+            "knia-standard-unilateral-claim-limit"
+          ],
+          "retrieved_ids": [
+            "knia-standard-unilateral-claim-limit",
+            "knia-find-standard",
+            "knia-standard-no-binding-force"
+          ],
+          "scores": [
+            7.527974,
+            4.118478,
+            4.118478
+          ],
+          "recall_at_3": 1.0,
+          "mrr_at_3": 1.0,
+          "ndcg_at_3": 1.0
+        },
+        {
+          "id": "D08",
+          "query": "과실비율 인정기준은 어떤 절차로 개정되나요?",
+          "relevant_ids": [
+            "knia-standard-revision-process"
+          ],
+          "retrieved_ids": [
+            "knia-standard-no-binding-force",
+            "knia-find-standard",
+            "knia-standard-unilateral-claim-limit"
+          ],
+          "scores": [
+            5.823226,
+            4.118478,
+            4.118478
+          ],
+          "recall_at_3": 0.0,
+          "mrr_at_3": 0.0,
+          "ndcg_at_3": 0.0
+        }
+      ],
+      "no_answer": [
+        {
+          "id": "N01",
+          "split": "development",
+          "query": "KB손해보험 자동차사고 접수 수수료는 얼마인가요?",
+          "relevant_ids": [],
+          "reason": "발췌에 접수 수수료 정보가 없음",
+          "retrieved_ids": [
+            "kb-auto-report-phone",
+            "kb-auto-report-sms",
+            "kb-auto-online-steps"
+          ],
+          "false_positive": true,
+          "display": "참고 발췌 반환(오탐)"
+        },
+        {
+          "id": "N02",
+          "split": "development",
+          "query": "과실비율 인정기준의 2027년 개정일은 언제인가요?",
+          "relevant_ids": [],
+          "reason": "발췌에 특정 개정일·현행 버전이 없음",
+          "retrieved_ids": [
+            "knia-find-standard",
+            "knia-standard-no-binding-force",
+            "knia-standard-unilateral-claim-limit"
+          ],
+          "false_positive": true,
+          "display": "참고 발췌 반환(오탐)"
+        }
+      ]
+    },
+    "bm25_threshold_0": {
+      "metrics": {
+        "recall_at_3": 1.0,
+        "mrr_at_3": 0.875,
+        "ndcg_at_3": 0.9077324383928644,
+        "answerable_count": 8,
+        "no_answer_count": 2,
+        "no_answer_false_positive_count": 2,
+        "no_answer_false_positive_rate": 1.0
+      },
+      "questions": [
+        {
+          "id": "D01",
+          "query": "자동차 사고 전화 접수 번호는?",
+          "relevant_ids": [
+            "kb-auto-report-phone"
+          ],
+          "retrieved_ids": [
+            "kb-auto-report-phone",
+            "kb-auto-report-sms",
+            "kb-auto-online-steps"
+          ],
+          "scores": [
+            8.16376,
+            6.846724,
+            5.311595
+          ],
+          "recall_at_3": 1.0,
+          "mrr_at_3": 1.0,
+          "ndcg_at_3": 1.0
+        },
+        {
+          "id": "D02",
+          "query": "온라인 사고접수 진행 순서는?",
+          "relevant_ids": [
+            "kb-auto-online-steps"
+          ],
+          "retrieved_ids": [
+            "kb-auto-online-steps",
+            "kb-auto-report-phone",
+            "kb-auto-progress-lookup"
+          ],
+          "scores": [
+            10.832743,
+            8.296136,
+            7.456039
+          ],
+          "recall_at_3": 1.0,
+          "mrr_at_3": 1.0,
+          "ndcg_at_3": 1.0
+        },
+        {
+          "id": "D03",
+          "query": "접수 완료 시 문자로 보내는 정보는?",
+          "relevant_ids": [
+            "kb-auto-report-sms"
+          ],
+          "retrieved_ids": [
+            "kb-auto-online-steps",
+            "kb-auto-report-sms",
+            "kb-auto-report-phone"
+          ],
+          "scores": [
+            4.581547,
+            2.547155,
+            1.360016
+          ],
+          "recall_at_3": 1.0,
+          "mrr_at_3": 0.5,
+          "ndcg_at_3": 0.6309297535714575
+        },
+        {
+          "id": "D04",
+          "query": "보상진행과 담당자 조회 위치는?",
+          "relevant_ids": [
+            "kb-auto-progress-lookup"
+          ],
+          "retrieved_ids": [
+            "kb-auto-progress-lookup",
+            "kb-auto-report-sms",
+            "kb-auto-online-steps"
+          ],
+          "scores": [
+            19.303682,
+            4.933102,
+            1.833512
+          ],
+          "recall_at_3": 1.0,
+          "mrr_at_3": 1.0,
+          "ndcg_at_3": 1.0
+        },
+        {
+          "id": "D05",
+          "query": "사고상황별 과실비율 인정기준 찾는 방법은?",
+          "relevant_ids": [
+            "knia-find-standard"
+          ],
+          "retrieved_ids": [
+            "knia-find-standard",
+            "knia-standard-no-binding-force",
+            "knia-standard-unilateral-claim-limit"
+          ],
+          "scores": [
+            24.879141,
+            14.126873,
+            13.674141
+          ],
+          "recall_at_3": 1.0,
+          "mrr_at_3": 1.0,
+          "ndcg_at_3": 1.0
+        },
+        {
+          "id": "D06",
+          "query": "과실비율 인정기준의 법적 효력은?",
+          "relevant_ids": [
+            "knia-standard-no-binding-force"
+          ],
+          "retrieved_ids": [
+            "knia-standard-no-binding-force",
+            "knia-standard-unilateral-claim-limit",
+            "knia-standard-revision-process"
+          ],
+          "scores": [
+            19.804786,
+            15.106471,
+            12.782202
+          ],
+          "recall_at_3": 1.0,
+          "mrr_at_3": 1.0,
+          "ndcg_at_3": 1.0
+        },
+        {
+          "id": "D07",
+          "query": "한쪽 주장만으로 과실비율 결정 가능한가요?",
+          "relevant_ids": [
+            "knia-standard-unilateral-claim-limit"
+          ],
+          "retrieved_ids": [
+            "knia-standard-unilateral-claim-limit",
+            "knia-standard-revision-process",
+            "knia-standard-no-binding-force"
+          ],
+          "scores": [
+            24.901307,
+            7.835177,
+            7.238059
+          ],
+          "recall_at_3": 1.0,
+          "mrr_at_3": 1.0,
+          "ndcg_at_3": 1.0
+        },
+        {
+          "id": "D08",
+          "query": "과실비율 인정기준은 어떤 절차로 개정되나요?",
+          "relevant_ids": [
+            "knia-standard-revision-process"
+          ],
+          "retrieved_ids": [
+            "knia-standard-no-binding-force",
+            "knia-standard-revision-process",
+            "knia-standard-unilateral-claim-limit"
+          ],
+          "scores": [
+            19.877646,
+            18.436104,
+            13.350014
+          ],
+          "recall_at_3": 1.0,
+          "mrr_at_3": 0.5,
+          "ndcg_at_3": 0.6309297535714575
+        }
+      ],
+      "no_answer": [
+        {
+          "id": "N01",
+          "split": "development",
+          "query": "KB손해보험 자동차사고 접수 수수료는 얼마인가요?",
+          "relevant_ids": [],
+          "reason": "발췌에 접수 수수료 정보가 없음",
+          "retrieved_ids": [
+            "kb-auto-online-steps",
+            "kb-auto-report-phone",
+            "kb-auto-progress-lookup"
+          ],
+          "false_positive": true,
+          "display": "참고 발췌 반환(오탐)"
+        },
+        {
+          "id": "N02",
+          "split": "development",
+          "query": "과실비율 인정기준의 2027년 개정일은 언제인가요?",
+          "relevant_ids": [],
+          "reason": "발췌에 특정 개정일·현행 버전이 없음",
+          "retrieved_ids": [
+            "knia-standard-revision-process",
+            "knia-standard-no-binding-force",
+            "knia-standard-unilateral-claim-limit"
+          ],
+          "false_positive": true,
+          "display": "참고 발췌 반환(오탐)"
+        }
+      ]
+    },
+    "bm25_dev_selected": {
+      "metrics": {
+        "recall_at_3": 0.25,
+        "mrr_at_3": 0.25,
+        "ndcg_at_3": 0.25,
+        "answerable_count": 8,
+        "no_answer_count": 2,
+        "no_answer_false_positive_count": 0,
+        "no_answer_false_positive_rate": 0.0
+      },
+      "questions": [
+        {
+          "id": "D01",
+          "query": "자동차 사고 전화 접수 번호는?",
+          "relevant_ids": [
+            "kb-auto-report-phone"
+          ],
+          "retrieved_ids": [],
+          "scores": [],
+          "recall_at_3": 0.0,
+          "mrr_at_3": 0.0,
+          "ndcg_at_3": 0.0
+        },
+        {
+          "id": "D02",
+          "query": "온라인 사고접수 진행 순서는?",
+          "relevant_ids": [
+            "kb-auto-online-steps"
+          ],
+          "retrieved_ids": [],
+          "scores": [],
+          "recall_at_3": 0.0,
+          "mrr_at_3": 0.0,
+          "ndcg_at_3": 0.0
+        },
+        {
+          "id": "D03",
+          "query": "접수 완료 시 문자로 보내는 정보는?",
+          "relevant_ids": [
+            "kb-auto-report-sms"
+          ],
+          "retrieved_ids": [],
+          "scores": [],
+          "recall_at_3": 0.0,
+          "mrr_at_3": 0.0,
+          "ndcg_at_3": 0.0
+        },
+        {
+          "id": "D04",
+          "query": "보상진행과 담당자 조회 위치는?",
+          "relevant_ids": [
+            "kb-auto-progress-lookup"
+          ],
+          "retrieved_ids": [],
+          "scores": [],
+          "recall_at_3": 0.0,
+          "mrr_at_3": 0.0,
+          "ndcg_at_3": 0.0
+        },
+        {
+          "id": "D05",
+          "query": "사고상황별 과실비율 인정기준 찾는 방법은?",
+          "relevant_ids": [
+            "knia-find-standard"
+          ],
+          "retrieved_ids": [
+            "knia-find-standard"
+          ],
+          "scores": [
+            24.879141
+          ],
+          "recall_at_3": 1.0,
+          "mrr_at_3": 1.0,
+          "ndcg_at_3": 1.0
+        },
+        {
+          "id": "D06",
+          "query": "과실비율 인정기준의 법적 효력은?",
+          "relevant_ids": [
+            "knia-standard-no-binding-force"
+          ],
+          "retrieved_ids": [],
+          "scores": [],
+          "recall_at_3": 0.0,
+          "mrr_at_3": 0.0,
+          "ndcg_at_3": 0.0
+        },
+        {
+          "id": "D07",
+          "query": "한쪽 주장만으로 과실비율 결정 가능한가요?",
+          "relevant_ids": [
+            "knia-standard-unilateral-claim-limit"
+          ],
+          "retrieved_ids": [
+            "knia-standard-unilateral-claim-limit"
+          ],
+          "scores": [
+            24.901307
+          ],
+          "recall_at_3": 1.0,
+          "mrr_at_3": 1.0,
+          "ndcg_at_3": 1.0
+        },
+        {
+          "id": "D08",
+          "query": "과실비율 인정기준은 어떤 절차로 개정되나요?",
+          "relevant_ids": [
+            "knia-standard-revision-process"
+          ],
+          "retrieved_ids": [],
+          "scores": [],
+          "recall_at_3": 0.0,
+          "mrr_at_3": 0.0,
+          "ndcg_at_3": 0.0
+        }
+      ],
+      "no_answer": [
+        {
+          "id": "N01",
+          "split": "development",
+          "query": "KB손해보험 자동차사고 접수 수수료는 얼마인가요?",
+          "relevant_ids": [],
+          "reason": "발췌에 접수 수수료 정보가 없음",
+          "retrieved_ids": [],
+          "false_positive": false,
+          "display": "관련 발췌 없음"
+        },
+        {
+          "id": "N02",
+          "split": "development",
+          "query": "과실비율 인정기준의 2027년 개정일은 언제인가요?",
+          "relevant_ids": [],
+          "reason": "발췌에 특정 개정일·현행 버전이 없음",
+          "retrieved_ids": [],
+          "false_positive": false,
+          "display": "관련 발췌 없음"
+        }
+      ]
+    }
+  },
+  "fixed_evaluation": {
+    "substring_baseline": {
+      "metrics": {
+        "recall_at_3": 0.9166666666666666,
+        "mrr_at_3": 0.875,
+        "ndcg_at_3": 0.8859108127976215,
+        "answerable_count": 12,
+        "no_answer_count": 2,
+        "no_answer_false_positive_count": 2,
+        "no_answer_false_positive_rate": 1.0
+      },
+      "questions": [
+        {
+          "id": "E01",
+          "query": "고객콜센터에 전화해서 사고를 접수할 수 있나요?",
+          "relevant_ids": [
+            "kb-auto-report-phone"
+          ],
+          "retrieved_ids": [
+            "kb-auto-report-phone",
+            "kb-auto-report-sms",
+            "kb-auto-online-steps"
+          ],
+          "scores": [
+            9.799033,
+            6.030174,
+            5.276403
+          ],
+          "recall_at_3": 1.0,
+          "mrr_at_3": 1.0,
+          "ndcg_at_3": 1.0
+        },
+        {
+          "id": "E02",
+          "query": "빠른 자동차 사고접수는 어느 번호로 하나요?",
+          "relevant_ids": [
+            "kb-auto-report-phone"
+          ],
+          "retrieved_ids": [
+            "kb-auto-report-phone",
+            "kb-auto-online-steps",
+            "kb-auto-progress-lookup"
+          ],
+          "scores": [
+            6.852845,
+            3.088858,
+            3.088858
+          ],
+          "recall_at_3": 1.0,
+          "mrr_at_3": 1.0,
+          "ndcg_at_3": 1.0
+        },
+        {
+          "id": "E03",
+          "query": "개인정보 처리동의 다음에 입력하는 항목은?",
+          "relevant_ids": [
+            "kb-auto-online-steps"
+          ],
+          "retrieved_ids": [
+            "kb-auto-online-steps"
+          ],
+          "scores": [
+            3.409496
+          ],
+          "recall_at_3": 1.0,
+          "mrr_at_3": 1.0,
+          "ndcg_at_3": 1.0
+        },
+        {
+          "id": "E04",
+          "query": "청구내용 입력 후 마지막 접수 단계는?",
+          "relevant_ids": [
+            "kb-auto-online-steps"
+          ],
+          "retrieved_ids": [
+            "kb-auto-report-phone",
+            "kb-auto-online-steps",
+            "kb-auto-report-sms"
+          ],
+          "scores": [
+            12.355433,
+            12.32158,
+            8.236955
+          ],
+          "recall_at_3": 1.0,
+          "mrr_at_3": 0.5,
+          "ndcg_at_3": 0.6309297535714575
+        },
+        {
+          "id": "E05",
+          "query": "사고접수 완료 후 SMS에는 어떤 내용이 오나요?",
+          "relevant_ids": [
+            "kb-auto-report-sms"
+          ],
+          "retrieved_ids": [
+            "kb-auto-report-sms",
+            "kb-auto-report-phone",
+            "kb-auto-online-steps"
+          ],
+          "scores": [
+            5.504772,
+            5.148097,
+            4.475153
+          ],
+          "recall_at_3": 1.0,
+          "mrr_at_3": 1.0,
+          "ndcg_at_3": 1.0
+        },
+        {
+          "id": "E06",
+          "query": "보상처리 내역과 담당자는 어느 메뉴에서 확인하나요?",
+          "relevant_ids": [
+            "kb-auto-progress-lookup"
+          ],
+          "retrieved_ids": [
+            "kb-auto-progress-lookup",
+            "kb-auto-report-sms"
+          ],
+          "scores": [
+            5.863631,
+            1.386294
+          ],
+          "recall_at_3": 1.0,
+          "mrr_at_3": 1.0,
+          "ndcg_at_3": 1.0
+        },
+        {
+          "id": "E07",
+          "query": "사고 유형과 세부 상황으로 인정기준을 찾는 방법은?",
+          "relevant_ids": [
+            "knia-find-standard"
+          ],
+          "retrieved_ids": [
+            "knia-find-standard",
+            "kb-auto-report-phone",
+            "kb-auto-online-steps"
+          ],
+          "scores": [
+            7.59428,
+            6.613429,
+            5.78675
+          ],
+          "recall_at_3": 1.0,
+          "mrr_at_3": 1.0,
+          "ndcg_at_3": 1.0
+        },
+        {
+          "id": "E08",
+          "query": "과실비율 인정기준은 법적으로 구속력이 있나요?",
+          "relevant_ids": [
+            "knia-standard-no-binding-force"
+          ],
+          "retrieved_ids": [
+            "knia-standard-no-binding-force",
+            "knia-find-standard",
+            "knia-standard-unilateral-claim-limit"
+          ],
+          "scores": [
+            5.823226,
+            4.118478,
+            4.118478
+          ],
+          "recall_at_3": 1.0,
+          "mrr_at_3": 1.0,
+          "ndcg_at_3": 1.0
+        },
+        {
+          "id": "E09",
+          "query": "과실비율 인정기준은 어떤 성격의 자료인가요?",
+          "relevant_ids": [
+            "knia-standard-no-binding-force"
+          ],
+          "retrieved_ids": [
+            "knia-standard-no-binding-force",
+            "knia-find-standard",
+            "knia-standard-unilateral-claim-limit"
+          ],
+          "scores": [
+            5.823226,
+            4.118478,
+            4.118478
+          ],
+          "recall_at_3": 1.0,
+          "mrr_at_3": 1.0,
+          "ndcg_at_3": 1.0
+        },
+        {
+          "id": "E10",
+          "query": "일방 사고 당사자의 주장만으로 과실비율을 정할 수 있나요?",
+          "relevant_ids": [
+            "knia-standard-unilateral-claim-limit"
+          ],
+          "retrieved_ids": [
+            "kb-auto-report-phone",
+            "kb-auto-report-sms",
+            "kb-auto-online-steps"
+          ],
+          "scores": [
+            16.412462,
+            11.816924,
+            11.063153
+          ],
+          "recall_at_3": 0.0,
+          "mrr_at_3": 0.0,
+          "ndcg_at_3": 0.0
+        },
+        {
+          "id": "E11",
+          "query": "인정기준 개정 때 누구의 검토와 의견을 거치나요?",
+          "relevant_ids": [
+            "knia-standard-revision-process"
+          ],
+          "retrieved_ids": [
+            "knia-standard-revision-process",
+            "knia-standard-no-binding-force",
+            "knia-standard-unilateral-claim-limit"
+          ],
+          "scores": [
+            13.317347,
+            4.118478,
+            3.088858
+          ],
+          "recall_at_3": 1.0,
+          "mrr_at_3": 1.0,
+          "ndcg_at_3": 1.0
+        },
+        {
+          "id": "E12",
+          "query": "교통 환경과 사회통념 변화도 인정기준 개정 사유인가요?",
+          "relevant_ids": [
+            "knia-standard-revision-process"
+          ],
+          "retrieved_ids": [
+            "knia-standard-revision-process",
+            "knia-standard-no-binding-force",
+            "knia-standard-unilateral-claim-limit"
+          ],
+          "scores": [
+            15.022095,
+            4.118478,
+            3.088858
+          ],
+          "recall_at_3": 1.0,
+          "mrr_at_3": 1.0,
+          "ndcg_at_3": 1.0
+        }
+      ],
+      "no_answer": [
+        {
+          "id": "N03",
+          "split": "fixed_evaluation",
+          "query": "자동차사고 접수 취소는 어떻게 하나요?",
+          "relevant_ids": [],
+          "reason": "발췌에 접수 취소 절차가 없음",
+          "retrieved_ids": [
+            "kb-auto-report-phone",
+            "kb-auto-report-sms",
+            "kb-auto-online-steps"
+          ],
+          "false_positive": true,
+          "display": "참고 발췌 반환(오탐)"
+        },
+        {
+          "id": "N04",
+          "split": "fixed_evaluation",
+          "query": "내 사고 과실비율은 몇 대 몇인가요?",
+          "relevant_ids": [],
+          "reason": "발췌에 개별 사고 과실비율 수치가 없음",
+          "retrieved_ids": [
+            "kb-auto-report-phone",
+            "kb-auto-report-sms",
+            "kb-auto-progress-lookup"
+          ],
+          "false_positive": true,
+          "display": "참고 발췌 반환(오탐)"
+        }
+      ]
+    },
+    "bm25_threshold_0": {
+      "metrics": {
+        "recall_at_3": 1.0,
+        "mrr_at_3": 1.0,
+        "ndcg_at_3": 1.0,
+        "answerable_count": 12,
+        "no_answer_count": 2,
+        "no_answer_false_positive_count": 2,
+        "no_answer_false_positive_rate": 1.0
+      },
+      "questions": [
+        {
+          "id": "E01",
+          "query": "고객콜센터에 전화해서 사고를 접수할 수 있나요?",
+          "relevant_ids": [
+            "kb-auto-report-phone"
+          ],
+          "retrieved_ids": [
+            "kb-auto-report-phone",
+            "kb-auto-online-steps",
+            "kb-auto-report-sms"
+          ],
+          "scores": [
+            20.67638,
+            1.94279,
+            1.918767
+          ],
+          "recall_at_3": 1.0,
+          "mrr_at_3": 1.0,
+          "ndcg_at_3": 1.0
+        },
+        {
+          "id": "E02",
+          "query": "빠른 자동차 사고접수는 어느 번호로 하나요?",
+          "relevant_ids": [
+            "kb-auto-report-phone"
+          ],
+          "retrieved_ids": [
+            "kb-auto-report-phone",
+            "kb-auto-report-sms",
+            "kb-auto-online-steps"
+          ],
+          "scores": [
+            11.839697,
+            11.463319,
+            9.803335
+          ],
+          "recall_at_3": 1.0,
+          "mrr_at_3": 1.0,
+          "ndcg_at_3": 1.0
+        },
+        {
+          "id": "E03",
+          "query": "개인정보 처리동의 다음에 입력하는 항목은?",
+          "relevant_ids": [
+            "kb-auto-online-steps"
+          ],
+          "retrieved_ids": [
+            "kb-auto-online-steps",
+            "knia-standard-unilateral-claim-limit",
+            "kb-auto-progress-lookup"
+          ],
+          "scores": [
+            23.095644,
+            3.288931,
+            3.22177
+          ],
+          "recall_at_3": 1.0,
+          "mrr_at_3": 1.0,
+          "ndcg_at_3": 1.0
+        },
+        {
+          "id": "E04",
+          "query": "청구내용 입력 후 마지막 접수 단계는?",
+          "relevant_ids": [
+            "kb-auto-online-steps"
+          ],
+          "retrieved_ids": [
+            "kb-auto-online-steps",
+            "knia-find-standard",
+            "kb-auto-report-phone"
+          ],
+          "scores": [
+            15.954824,
+            1.874174,
+            1.360016
+          ],
+          "recall_at_3": 1.0,
+          "mrr_at_3": 1.0,
+          "ndcg_at_3": 1.0
+        },
+        {
+          "id": "E05",
+          "query": "사고접수 완료 후 SMS에는 어떤 내용이 오나요?",
+          "relevant_ids": [
+            "kb-auto-report-sms"
+          ],
+          "retrieved_ids": [
+            "kb-auto-report-sms",
+            "kb-auto-online-steps",
+            "kb-auto-report-phone"
+          ],
+          "scores": [
+            12.943924,
+            10.358023,
+            6.690518
+          ],
+          "recall_at_3": 1.0,
+          "mrr_at_3": 1.0,
+          "ndcg_at_3": 1.0
+        },
+        {
+          "id": "E06",
+          "query": "보상처리 내역과 담당자는 어느 메뉴에서 확인하나요?",
+          "relevant_ids": [
+            "kb-auto-progress-lookup"
+          ],
+          "retrieved_ids": [
+            "kb-auto-progress-lookup",
+            "kb-auto-report-sms",
+            "kb-auto-online-steps"
+          ],
+          "scores": [
+            32.825714,
+            10.775525,
+            1.001868
+          ],
+          "recall_at_3": 1.0,
+          "mrr_at_3": 1.0,
+          "ndcg_at_3": 1.0
+        },
+        {
+          "id": "E07",
+          "query": "사고 유형과 세부 상황으로 인정기준을 찾는 방법은?",
+          "relevant_ids": [
+            "knia-find-standard"
+          ],
+          "retrieved_ids": [
+            "knia-find-standard",
+            "knia-standard-unilateral-claim-limit",
+            "knia-standard-revision-process"
+          ],
+          "scores": [
+            20.664938,
+            8.347374,
+            7.519175
+          ],
+          "recall_at_3": 1.0,
+          "mrr_at_3": 1.0,
+          "ndcg_at_3": 1.0
+        },
+        {
+          "id": "E08",
+          "query": "과실비율 인정기준은 법적으로 구속력이 있나요?",
+          "relevant_ids": [
+            "knia-standard-no-binding-force"
+          ],
+          "retrieved_ids": [
+            "knia-standard-no-binding-force",
+            "knia-standard-unilateral-claim-limit",
+            "knia-standard-revision-process"
+          ],
+          "scores": [
+            27.545344,
+            15.106471,
+            14.068277
+          ],
+          "recall_at_3": 1.0,
+          "mrr_at_3": 1.0,
+          "ndcg_at_3": 1.0
+        },
+        {
+          "id": "E09",
+          "query": "과실비율 인정기준은 어떤 성격의 자료인가요?",
+          "relevant_ids": [
+            "knia-standard-no-binding-force"
+          ],
+          "retrieved_ids": [
+            "knia-standard-no-binding-force",
+            "knia-standard-unilateral-claim-limit",
+            "knia-standard-revision-process"
+          ],
+          "scores": [
+            21.794571,
+            13.350014,
+            12.782202
+          ],
+          "recall_at_3": 1.0,
+          "mrr_at_3": 1.0,
+          "ndcg_at_3": 1.0
+        },
+        {
+          "id": "E10",
+          "query": "일방 사고 당사자의 주장만으로 과실비율을 정할 수 있나요?",
+          "relevant_ids": [
+            "knia-standard-unilateral-claim-limit"
+          ],
+          "retrieved_ids": [
+            "knia-standard-unilateral-claim-limit",
+            "knia-standard-revision-process",
+            "knia-find-standard"
+          ],
+          "scores": [
+            45.088561,
+            7.835177,
+            7.694966
+          ],
+          "recall_at_3": 1.0,
+          "mrr_at_3": 1.0,
+          "ndcg_at_3": 1.0
+        },
+        {
+          "id": "E11",
+          "query": "인정기준 개정 때 누구의 검토와 의견을 거치나요?",
+          "relevant_ids": [
+            "knia-standard-revision-process"
+          ],
+          "retrieved_ids": [
+            "knia-standard-revision-process",
+            "knia-standard-no-binding-force",
+            "knia-standard-unilateral-claim-limit"
+          ],
+          "scores": [
+            16.612348,
+            6.888814,
+            6.266791
+          ],
+          "recall_at_3": 1.0,
+          "mrr_at_3": 1.0,
+          "ndcg_at_3": 1.0
+        },
+        {
+          "id": "E12",
+          "query": "교통 환경과 사회통념 변화도 인정기준 개정 사유인가요?",
+          "relevant_ids": [
+            "knia-standard-revision-process"
+          ],
+          "retrieved_ids": [
+            "knia-standard-revision-process",
+            "knia-standard-no-binding-force",
+            "knia-standard-unilateral-claim-limit"
+          ],
+          "scores": [
+            26.278611,
+            6.888814,
+            6.266791
+          ],
+          "recall_at_3": 1.0,
+          "mrr_at_3": 1.0,
+          "ndcg_at_3": 1.0
+        }
+      ],
+      "no_answer": [
+        {
+          "id": "N03",
+          "split": "fixed_evaluation",
+          "query": "자동차사고 접수 취소는 어떻게 하나요?",
+          "relevant_ids": [],
+          "reason": "발췌에 접수 취소 절차가 없음",
+          "retrieved_ids": [
+            "kb-auto-report-phone",
+            "kb-auto-online-steps",
+            "kb-auto-progress-lookup"
+          ],
+          "false_positive": true,
+          "display": "참고 발췌 반환(오탐)"
+        },
+        {
+          "id": "N04",
+          "split": "fixed_evaluation",
+          "query": "내 사고 과실비율은 몇 대 몇인가요?",
+          "relevant_ids": [],
+          "reason": "발췌에 개별 사고 과실비율 수치가 없음",
+          "retrieved_ids": [
+            "knia-find-standard",
+            "knia-standard-unilateral-claim-limit",
+            "knia-standard-no-binding-force"
+          ],
+          "false_positive": true,
+          "display": "참고 발췌 반환(오탐)"
+        }
+      ]
+    },
+    "bm25_dev_selected": {
+      "metrics": {
+        "recall_at_3": 0.3333333333333333,
+        "mrr_at_3": 0.3333333333333333,
+        "ndcg_at_3": 0.3333333333333333,
+        "answerable_count": 12,
+        "no_answer_count": 2,
+        "no_answer_false_positive_count": 0,
+        "no_answer_false_positive_rate": 0.0
+      },
+      "questions": [
+        {
+          "id": "E01",
+          "query": "고객콜센터에 전화해서 사고를 접수할 수 있나요?",
+          "relevant_ids": [
+            "kb-auto-report-phone"
+          ],
+          "retrieved_ids": [],
+          "scores": [],
+          "recall_at_3": 0.0,
+          "mrr_at_3": 0.0,
+          "ndcg_at_3": 0.0
+        },
+        {
+          "id": "E02",
+          "query": "빠른 자동차 사고접수는 어느 번호로 하나요?",
+          "relevant_ids": [
+            "kb-auto-report-phone"
+          ],
+          "retrieved_ids": [],
+          "scores": [],
+          "recall_at_3": 0.0,
+          "mrr_at_3": 0.0,
+          "ndcg_at_3": 0.0
+        },
+        {
+          "id": "E03",
+          "query": "개인정보 처리동의 다음에 입력하는 항목은?",
+          "relevant_ids": [
+            "kb-auto-online-steps"
+          ],
+          "retrieved_ids": [],
+          "scores": [],
+          "recall_at_3": 0.0,
+          "mrr_at_3": 0.0,
+          "ndcg_at_3": 0.0
+        },
+        {
+          "id": "E04",
+          "query": "청구내용 입력 후 마지막 접수 단계는?",
+          "relevant_ids": [
+            "kb-auto-online-steps"
+          ],
+          "retrieved_ids": [],
+          "scores": [],
+          "recall_at_3": 0.0,
+          "mrr_at_3": 0.0,
+          "ndcg_at_3": 0.0
+        },
+        {
+          "id": "E05",
+          "query": "사고접수 완료 후 SMS에는 어떤 내용이 오나요?",
+          "relevant_ids": [
+            "kb-auto-report-sms"
+          ],
+          "retrieved_ids": [],
+          "scores": [],
+          "recall_at_3": 0.0,
+          "mrr_at_3": 0.0,
+          "ndcg_at_3": 0.0
+        },
+        {
+          "id": "E06",
+          "query": "보상처리 내역과 담당자는 어느 메뉴에서 확인하나요?",
+          "relevant_ids": [
+            "kb-auto-progress-lookup"
+          ],
+          "retrieved_ids": [
+            "kb-auto-progress-lookup"
+          ],
+          "scores": [
+            32.825714
+          ],
+          "recall_at_3": 1.0,
+          "mrr_at_3": 1.0,
+          "ndcg_at_3": 1.0
+        },
+        {
+          "id": "E07",
+          "query": "사고 유형과 세부 상황으로 인정기준을 찾는 방법은?",
+          "relevant_ids": [
+            "knia-find-standard"
+          ],
+          "retrieved_ids": [],
+          "scores": [],
+          "recall_at_3": 0.0,
+          "mrr_at_3": 0.0,
+          "ndcg_at_3": 0.0
+        },
+        {
+          "id": "E08",
+          "query": "과실비율 인정기준은 법적으로 구속력이 있나요?",
+          "relevant_ids": [
+            "knia-standard-no-binding-force"
+          ],
+          "retrieved_ids": [
+            "knia-standard-no-binding-force"
+          ],
+          "scores": [
+            27.545344
+          ],
+          "recall_at_3": 1.0,
+          "mrr_at_3": 1.0,
+          "ndcg_at_3": 1.0
+        },
+        {
+          "id": "E09",
+          "query": "과실비율 인정기준은 어떤 성격의 자료인가요?",
+          "relevant_ids": [
+            "knia-standard-no-binding-force"
+          ],
+          "retrieved_ids": [],
+          "scores": [],
+          "recall_at_3": 0.0,
+          "mrr_at_3": 0.0,
+          "ndcg_at_3": 0.0
+        },
+        {
+          "id": "E10",
+          "query": "일방 사고 당사자의 주장만으로 과실비율을 정할 수 있나요?",
+          "relevant_ids": [
+            "knia-standard-unilateral-claim-limit"
+          ],
+          "retrieved_ids": [
+            "knia-standard-unilateral-claim-limit"
+          ],
+          "scores": [
+            45.088561
+          ],
+          "recall_at_3": 1.0,
+          "mrr_at_3": 1.0,
+          "ndcg_at_3": 1.0
+        },
+        {
+          "id": "E11",
+          "query": "인정기준 개정 때 누구의 검토와 의견을 거치나요?",
+          "relevant_ids": [
+            "knia-standard-revision-process"
+          ],
+          "retrieved_ids": [],
+          "scores": [],
+          "recall_at_3": 0.0,
+          "mrr_at_3": 0.0,
+          "ndcg_at_3": 0.0
+        },
+        {
+          "id": "E12",
+          "query": "교통 환경과 사회통념 변화도 인정기준 개정 사유인가요?",
+          "relevant_ids": [
+            "knia-standard-revision-process"
+          ],
+          "retrieved_ids": [
+            "knia-standard-revision-process"
+          ],
+          "scores": [
+            26.278611
+          ],
+          "recall_at_3": 1.0,
+          "mrr_at_3": 1.0,
+          "ndcg_at_3": 1.0
+        }
+      ],
+      "no_answer": [
+        {
+          "id": "N03",
+          "split": "fixed_evaluation",
+          "query": "자동차사고 접수 취소는 어떻게 하나요?",
+          "relevant_ids": [],
+          "reason": "발췌에 접수 취소 절차가 없음",
+          "retrieved_ids": [],
+          "false_positive": false,
+          "display": "관련 발췌 없음"
+        },
+        {
+          "id": "N04",
+          "split": "fixed_evaluation",
+          "query": "내 사고 과실비율은 몇 대 몇인가요?",
+          "relevant_ids": [],
+          "reason": "발췌에 개별 사고 과실비율 수치가 없음",
+          "retrieved_ids": [],
+          "false_positive": false,
+          "display": "관련 발췌 없음"
+        }
+      ]
+    }
+  },
+  "interpretation": {
+    "score": "검색 관련도이며 확률이 아닙니다.",
+    "no_answer": "관련 발췌 없음",
+    "separation": "업무 참고자료 검색이며 사기 모델 설명·보험금 지급 판단과 분리합니다.",
+    "limitations": [
+      "20개 수작업 자율합성 질의와 4개 답 없음 문항의 작은 내부 평가. 외부 독립 gold가 아니다.",
+      "동일 8문서의 짧은 발췌를 활용한 표현변경 평가로 일반화 성능을 입증하지 않는다.",
+      "ngram 부분일치 및 주제는 비슷하지만 답 없는 질문의 오탐 가능. 임계값은 의미적 답변 가능성 검증이 아니다.",
+      "점수 척도가 달라 두 검색 방식 점수를 확률처럼 직접 비교할 수 없다.",
+      "관련 발췌 없음은 검색 결과가 없다는 뜻이며 실제 공식 정보의 부재를 단정하지 않는다."
+    ],
+    "ui_default_decision": "parent 결정. 기존 search.py와 UI 기본값은 변경하지 않음."
+  },
+  "no_answer_all_four_descriptive": {
+    "substring_baseline": {
+      "false_positive_count": 4,
+      "count": 4,
+      "note": "개발 2개를 포함한 기술통계이며 독립 평가 지표가 아님"
+    },
+    "bm25_threshold_0": {
+      "false_positive_count": 4,
+      "count": 4,
+      "note": "개발 2개를 포함한 기술통계이며 독립 평가 지표가 아님"
+    },
+    "bm25_dev_selected": {
+      "false_positive_count": 0,
+      "count": 4,
+      "note": "개발 2개를 포함한 기술통계이며 독립 평가 지표가 아님"
+    }
+  },
+  "comparison": {
+    "bm25_threshold_0": {
+      "recall_at_3": 0.08333333333333337,
+      "mrr_at_3": 0.125,
+      "ndcg_at_3": 0.11408918720237848,
+      "no_answer_false_positive_rate": 0.0
+    },
+    "bm25_dev_selected": {
+      "recall_at_3": -0.5833333333333333,
+      "mrr_at_3": -0.5416666666666667,
+      "ndcg_at_3": -0.5525774794642881,
+      "no_answer_false_positive_rate": -1.0
+    }
+  }
+}

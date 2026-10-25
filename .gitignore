@@ -19,3 +19,6 @@ reports/pytest.txt
 reports/split_manifest.json
 
 data/*.sqlite*
+
+# 권리 검토 중인 신규 본문은 공개 저장소에 포함하지 않음
+resources/official_sources_phase2_candidates.json
