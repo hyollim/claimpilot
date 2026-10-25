@@ -1,0 +1,34 @@
+column,dtype,unique,missing,examples,role
+Month,object,12,0,Dec | Jan | Oct | Jun | Feb | Nov | Apr | Mar | Aug | Jul | May | Sep,학습 입력
+WeekOfMonth,int64,5,0,5 | 3 | 2 | 4 | 1,학습 입력
+DayOfWeek,object,7,0,Wednesday | Friday | Saturday | Monday | Tuesday | Sunday | Thursday,학습 입력
+Make,object,19,0,Honda | Toyota | Ford | Mazda | Chevrolet | Pontiac | Accura | Dodge | Mercury | Jaguar | Nisson | VW,학습 입력
+AccidentArea,object,2,0,Urban | Rural,학습 입력
+DayOfWeekClaimed,object,8,0,Tuesday | Monday | Thursday | Friday | Wednesday | Saturday | Sunday | 0,학습 입력
+MonthClaimed,object,13,0,Jan | Nov | Jul | Feb | Mar | Dec | Apr | Aug | May | Jun | Sep | Oct,학습 입력
+WeekOfMonthClaimed,int64,5,0,1 | 4 | 2 | 3 | 5,학습 입력
+Sex,object,2,0,Female | Male,제외: 민감 인구통계
+MaritalStatus,object,4,0,Single | Married | Widow | Divorced,제외: 인구통계 대리변수
+Age,int64,66,0,21 | 34 | 47 | 65 | 27 | 20 | 36 | 0 | 30 | 42 | 71 | 52,제외: 인구통계 및 0값 의미 불명
+Fault,object,2,0,Policy Holder | Third Party,제외: 책임 판정 시점 불명·사후 판단 위험
+PolicyType,object,9,0,Sport - Liability | Sport - Collision | Sedan - Liability | Utility - All Perils | Sedan - All Perils | Sedan - Collision | Utility - Collision | Utility - Liability | Sport - All Perils,학습 입력
+VehicleCategory,object,3,0,Sport | Utility | Sedan,학습 입력
+VehiclePrice,object,6,0,more than 69000 | 20000 to 29000 | 30000 to 39000 | less than 20000 | 40000 to 59000 | 60000 to 69000,학습 입력
+FraudFound_P,int64,2,0,0 | 1,제외: 정답 라벨
+PolicyNumber,int64,15420,0,1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12,제외: 식별자·정렬 순서 누수 위험
+RepNumber,int64,16,0,12 | 15 | 7 | 4 | 3 | 14 | 1 | 13 | 11 | 16 | 6 | 2,제외: 담당자 식별 대리변수
+Deductible,int64,4,0,300 | 400 | 500 | 700,학습 입력
+DriverRating,int64,4,0,1 | 4 | 3 | 2,제외: 등급 산정 기준 미제공
+Days_Policy_Accident,object,5,0,more than 30 | 15 to 30 | none | 1 to 7 | 8 to 15,학습 입력
+Days_Policy_Claim,object,4,0,more than 30 | 15 to 30 | 8 to 15 | none,학습 입력
+PastNumberOfClaims,object,4,0,none | 1 | 2 to 4 | more than 4,학습 입력
+AgeOfVehicle,object,8,0,3 years | 6 years | 7 years | more than 7 | 5 years | new | 4 years | 2 years,학습 입력
+AgeOfPolicyHolder,object,9,0,26 to 30 | 31 to 35 | 41 to 50 | 51 to 65 | 21 to 25 | 36 to 40 | 16 to 17 | over 65 | 18 to 20,제외: 인구통계 대리변수
+PoliceReportFiled,object,2,0,No | Yes,제외: 확보 시점 불명
+WitnessPresent,object,2,0,No | Yes,제외: 확인 시점 불명
+AgentType,object,2,0,External | Internal,학습 입력
+NumberOfSuppliments,object,4,0,none | more than 5 | 3 to 5 | 1 to 2,제외: 추가자료/변경 발생 시점과 의미 불명
+AddressChange_Claim,object,5,0,1 year | no change | 4 to 8 years | 2 to 3 years | under 6 months,제외: 청구 전후 시점 불명
+NumberOfCars,object,5,0,3 to 4 | 1 vehicle | 2 vehicles | 5 to 8 | more than 8,학습 입력
+Year,int64,3,0,1994 | 1995 | 1996,제외: 연도 분포 변화·분할 점검 전용
+BasePolicy,object,3,0,Liability | Collision | All Perils,학습 입력

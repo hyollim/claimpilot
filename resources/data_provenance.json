@@ -1,0 +1,7 @@
+{
+  "source": "https://www.kaggle.com/datasets/shivamb/vehicle-claim-fraud-detection",
+  "download_url": "https://www.kaggle.com/api/v1/datasets/download/shivamb/vehicle-claim-fraud-detection",
+  "file": "fraud_oracle.csv",
+  "sha256": "8b6aa59764ef4f8b058598d3e8f325ef3623f52f4b1cd4ef946baebb5ccfa9a6",
+  "redistribution": "원본 데이터는 저장소에 포함하지 않음. 이용조건은 Kaggle 원문 확인."
+}
