@@ -111,7 +111,11 @@ def effects_screen(raw,metrics,fraction):
     rows=budget_curve(raw.label.to_numpy(),raw.risk_score.to_numpy())
     table=pd.DataFrame(rows)
     fields={'requested_fraction':'요청 검토 비율','reviewed_fraction':'실제 검토 비율','k':'검토 건수','captured_count':'포집 양성','capture_rate':'양성 포집률','precision':'상위 정밀도','random_expected_count':'무작위 기대 포집 건수','random_expected_capture':'무작위 기대 포집률','lift':'리프트'}
-    st.dataframe(table[list(fields)].rename(columns=fields),hide_index=True,width='stretch')
+    display=table[list(fields)].copy()
+    for column in ['requested_fraction','reviewed_fraction','capture_rate','precision','random_expected_capture']:
+        display[column]*=100
+        fields[column]+=' (%)'
+    st.dataframe(display.rename(columns=fields),hide_index=True,width='stretch',column_config={fields[k]:st.column_config.NumberColumn(format='%.2f') for k in ['requested_fraction','reviewed_fraction','capture_rate','precision','random_expected_count','random_expected_capture','lift']})
     point=budget_metrics(raw.label.to_numpy(),raw.risk_score.to_numpy(),fraction)
     st.write(f"선택 검토 비율 {fraction:.0%}: {point['k']:,}건 검토 / {point['captured_count']}건 포집 / 포집률 {point['capture_rate']:.2%} / 정밀도 {point['precision']:.2%} / 리프트 {point['lift']:.3f}")
     curve=pd.DataFrame(cumulative_capture(raw.label.to_numpy(),raw.risk_score.to_numpy()))

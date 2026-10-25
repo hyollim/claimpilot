@@ -22,7 +22,7 @@ def frame():
             row.update({TARGET: int(g % 3 == 0), 'PolicyNumber': len(rows) + 1,
                         'Year': 1994 if g < 30 else 1995 if g < 60 else 1996})
             rows.append(row)
-    # 미래와 입력이 동일한 과거 행. 미래 라벨에 의존하지 않고 purge한다.
+    # 미래와 입력이 동일한 과거 행. 시간평가에서는 제거하지 않고 사후 감사한다.
     copy = dict(rows[-1]); copy['Year'] = 1995; copy['PolicyNumber'] = len(rows) + 1
     rows.append(copy)
     # 같은 원문 입력에 상반된 라벨을 하나 넣는다.
@@ -152,20 +152,29 @@ def output():
     return json.loads(path.read_text())
 
 
-def test_real_artifact_configuration_protected(output):
+@pytest.fixture
+def actual_data():
+    path=ROOT/'data/raw/fraud_oracle.csv'
+    if not path.exists():pytest.skip('공개 체크아웃에는 원본 데이터 없음: 다운로드·학습 후 통합 검증')
+    return pd.read_csv(path)
+
+
+def test_real_artifact_configuration_protected(output,actual_data):
     assert {'configuration', 'split_diagnostics', 'group_audit', 'group_evaluation', 'temporal_independent', 'weight_diagnostic', 'limitations'} <= set(output)
     c = output['configuration']
     assert c['features'] == FEATURES and c['feature_count'] == 19 and c['seed'] == 42
     assert c['catboost']['thread_count'] == 4
     assert c['existing_artifacts_unchanged'] and not c['model_artifact_written']
     assert c['protected_files_sha256_before'] == c['protected_files_sha256_after']
+    if any(not (ROOT/name).exists() for name in c['protected_files_sha256_after']):
+        pytest.skip('모델·분할 산출물 생성 후 해시 보호 검증')
     for name, digest in c['protected_files_sha256_after'].items():
         assert v.sha256_file(ROOT/name) == digest
     assert v.sha256_file(ROOT/'data/raw/fraud_oracle.csv') == c['data_sha256']
 
 
-def test_real_audit_matches_raw_and_csv(output):
-    df = pd.read_csv(ROOT/'data/raw/fraud_oracle.csv')
+def test_real_audit_matches_raw_and_csv(output,actual_data):
+    df = actual_data
     groups, table, audit = v.audit_input_groups(df)
     actual = pd.read_csv(ROOT/'reports/phase2_group_audit.csv')
     assert audit == output['group_audit']
@@ -179,8 +188,8 @@ def test_real_audit_matches_raw_and_csv(output):
     assert not set(FEATURES) & set(actual.columns)
 
 
-def test_real_splits_and_selection(output):
-    df = pd.read_csv(ROOT/'data/raw/fraud_oracle.csv')
+def test_real_splits_and_selection(output,actual_data):
+    df = actual_data
     groups = v.raw_input_groups(df)
     for name in ('group_evaluation', 'temporal_independent'):
         diag = output['split_diagnostics'][name]

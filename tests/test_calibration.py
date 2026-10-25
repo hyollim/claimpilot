@@ -157,6 +157,8 @@ def test_real_report_configuration_and_split_provenance(report):
     assert not config['test_used_for_fit_calibration_threshold_or_method_choice']
     assert config['existing_artifacts_unchanged']
     assert config['protected_files_sha256_before'] == config['protected_files_sha256_after']
+    if not (ROOT/'data/raw/fraud_oracle.csv').exists() or not (ROOT/'reports/split_manifest.json').exists():
+        pytest.skip('원본 데이터와 기존 분할 생성 후 보정 출처 통합 검증')
     df = pd.read_csv(ROOT/'data/raw/fraud_oracle.csv')
     manifest = json.loads((ROOT/'reports/split_manifest.json').read_text())
     parts, meta = c.research_split(df, manifest)
