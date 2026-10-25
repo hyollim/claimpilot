@@ -1,0 +1,7 @@
+claim_id,Month,WeekOfMonth,DayOfWeek,Make,AccidentArea,DayOfWeekClaimed,MonthClaimed,WeekOfMonthClaimed,PolicyType,VehicleCategory,VehiclePrice,Deductible,Days_Policy_Accident,Days_Policy_Claim,PastNumberOfClaims,AgeOfVehicle,AgentType,NumberOfCars,BasePolicy
+DEMO-001,Apr,2,Saturday,Dodge,Rural,Tuesday,Jun,3,Utility - Liability,Sedan,less than 20000,700,8 to 15,8 to 15,more than 4,new,External,3 to 4,All Perils
+DEMO-002,Feb,5,Tuesday,Honda,Urban,Monday,Nov,1,Sedan - Liability,Sedan,30000 to 39000,500,1 to 7,8 to 15,2 to 4,4 years,Internal,1 vehicle,All Perils
+DEMO-003,Jun,3,Monday,Mazda,Rural,Thursday,Apr,4,Sport - Liability,Sedan,less than 20000,400,more than 30,8 to 15,1,7 years,External,5 to 8,All Perils
+DEMO-004,Nov,1,Thursday,Pontiac,Urban,Friday,Feb,2,Utility - Liability,Sedan,30000 to 39000,300,15 to 30,8 to 15,none,2 years,Internal,2 vehicles,All Perils
+DEMO-005,Apr,4,Friday,DemoMotor,Rural,Sunday,Jun,5,Sedan - Liability,Sedan,less than 20000,700,none,8 to 15,more than 4,5 years,External,more than 8,All Perils
+DEMO-006,Feb,2,Sunday,Accura,Urban,Wednesday,Nov,3,Sport - Liability,Sedan,,,8 to 15,8 to 15,2 to 4,more than 7,Internal,3 to 4,All Perils

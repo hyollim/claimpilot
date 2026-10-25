@@ -1,0 +1,278 @@
+{
+  "models": [
+    {
+      "name": "상수 점수·고정 동점 순서",
+      "params": {},
+      "threshold": 0.05987894509295288,
+      "validation": {
+        "ap": 0.05966277561608301,
+        "precision": 0.05966277561608301,
+        "recall": 1.0,
+        "f1": 0.11260709914320685,
+        "capture_at_20": 0.21739130434782608,
+        "precision_at_20": 0.06482982171799027,
+        "lift_at_20": 1.0866041857515325,
+        "reviewed_count": 617,
+        "captured_count": 40,
+        "positives": 184,
+        "n": 3084,
+        "brier": 0.05610317555111068
+      },
+      "test": {
+        "ap": 0.05998702983138781,
+        "precision": 0.05998702983138781,
+        "recall": 1.0,
+        "f1": 0.11318446007953503,
+        "capture_at_20": 0.21081081081081082,
+        "precision_at_20": 0.06320907617504051,
+        "lift_at_20": 1.0537123833720268,
+        "reviewed_count": 617,
+        "captured_count": 39,
+        "positives": 185,
+        "n": 3084,
+        "brier": 0.056388597765706684
+      }
+    },
+    {
+      "name": "Logistic Regression C=0.1",
+      "params": {
+        "C": 0.1
+      },
+      "threshold": 0.5573884366989108,
+      "validation": {
+        "ap": 0.1210134148493682,
+        "precision": 0.11550151975683891,
+        "recall": 0.6195652173913043,
+        "f1": 0.19470538001707943,
+        "capture_at_20": 0.3858695652173913,
+        "precision_at_20": 0.11507293354943274,
+        "lift_at_20": 1.9287224297089705,
+        "reviewed_count": 617,
+        "captured_count": 71,
+        "positives": 184,
+        "n": 3084,
+        "brier": 0.21057438411275717
+      },
+      "test": {
+        "ap": 0.13025453460730044,
+        "precision": 0.10446343779677113,
+        "recall": 0.5945945945945946,
+        "f1": 0.1777059773828756,
+        "capture_at_20": 0.3891891891891892,
+        "precision_at_20": 0.1166936790923825,
+        "lift_at_20": 1.9453151693022033,
+        "reviewed_count": 617,
+        "captured_count": 72,
+        "positives": 185,
+        "n": 3084,
+        "brier": 0.21561476981551622
+      }
+    },
+    {
+      "name": "Logistic Regression C=1.0",
+      "params": {
+        "C": 1.0
+      },
+      "threshold": 0.5506173081319304,
+      "validation": {
+        "ap": 0.11694991662781402,
+        "precision": 0.11266201395812563,
+        "recall": 0.6141304347826086,
+        "f1": 0.19039595619208088,
+        "capture_at_20": 0.3967391304347826,
+        "precision_at_20": 0.11831442463533225,
+        "lift_at_20": 1.9830526389965468,
+        "reviewed_count": 617,
+        "captured_count": 73,
+        "positives": 184,
+        "n": 3084,
+        "brier": 0.21119162932423485
+      },
+      "test": {
+        "ap": 0.12196351691102855,
+        "precision": 0.10156971375807941,
+        "recall": 0.5945945945945946,
+        "f1": 0.17350157728706625,
+        "capture_at_20": 0.3891891891891892,
+        "precision_at_20": 0.1166936790923825,
+        "lift_at_20": 1.9453151693022033,
+        "reviewed_count": 617,
+        "captured_count": 72,
+        "positives": 185,
+        "n": 3084,
+        "brier": 0.21659059801851396
+      }
+    },
+    {
+      "name": "CatBoost depth=4",
+      "params": {
+        "depth": 4,
+        "best_iteration": 26
+      },
+      "threshold": 0.12726968627051455,
+      "validation": {
+        "ap": 0.1064443554127931,
+        "precision": 0.09944134078212291,
+        "recall": 0.483695652173913,
+        "f1": 0.164967562557924,
+        "capture_at_20": 0.3641304347826087,
+        "precision_at_20": 0.1085899513776337,
+        "lift_at_20": 1.820062011133817,
+        "reviewed_count": 617,
+        "captured_count": 67,
+        "positives": 184,
+        "n": 3084,
+        "brier": 0.05721213804490521
+      },
+      "test": {
+        "ap": 0.10029697575713849,
+        "precision": 0.10064935064935066,
+        "recall": 0.5027027027027027,
+        "f1": 0.16771866546438233,
+        "capture_at_20": 0.3675675675675676,
+        "precision_at_20": 0.11021069692058347,
+        "lift_at_20": 1.8372421043409697,
+        "reviewed_count": 617,
+        "captured_count": 68,
+        "positives": 185,
+        "n": 3084,
+        "brier": 0.05747550526543615
+      }
+    },
+    {
+      "name": "CatBoost depth=6",
+      "params": {
+        "depth": 6,
+        "best_iteration": 0
+      },
+      "threshold": 0.4653931593051774,
+      "validation": {
+        "ap": 0.06325391093760263,
+        "precision": 0.06029654036243822,
+        "recall": 0.9945652173913043,
+        "f1": 0.11369990680335508,
+        "capture_at_20": 0.2717391304347826,
+        "precision_at_20": 0.08103727714748785,
+        "lift_at_20": 1.3582552321894157,
+        "reviewed_count": 617,
+        "captured_count": 50,
+        "positives": 184,
+        "n": 3084,
+        "brier": 0.22069272710237528
+      },
+      "test": {
+        "ap": 0.06929783774512058,
+        "precision": 0.06005907449950771,
+        "recall": 0.9891891891891892,
+        "f1": 0.11324257425742575,
+        "capture_at_20": 0.2972972972972973,
+        "precision_at_20": 0.08914100486223663,
+        "lift_at_20": 1.4860046432169607,
+        "reviewed_count": 617,
+        "captured_count": 55,
+        "positives": 185,
+        "n": 3084,
+        "brier": 0.2207579878327096
+      }
+    }
+  ],
+  "selected_model": "Logistic Regression C=0.1",
+  "threshold": 0.5573884366989108,
+  "split": {
+    "train": {
+      "n": 9252,
+      "positives": 554,
+      "prevalence": 0.05987894509295288
+    },
+    "validation": {
+      "n": 3084,
+      "positives": 184,
+      "prevalence": 0.05966277561608301
+    },
+    "test": {
+      "n": 3084,
+      "positives": 185,
+      "prevalence": 0.05998702983138781
+    }
+  },
+  "features": [
+    "Month",
+    "WeekOfMonth",
+    "DayOfWeek",
+    "Make",
+    "AccidentArea",
+    "DayOfWeekClaimed",
+    "MonthClaimed",
+    "WeekOfMonthClaimed",
+    "PolicyType",
+    "VehicleCategory",
+    "VehiclePrice",
+    "Deductible",
+    "Days_Policy_Accident",
+    "Days_Policy_Claim",
+    "PastNumberOfClaims",
+    "AgeOfVehicle",
+    "AgentType",
+    "NumberOfCars",
+    "BasePolicy"
+  ],
+  "excluded_features": {
+    "FraudFound_P": "정답 라벨",
+    "PolicyNumber": "식별자·정렬 순서 누수 위험",
+    "RepNumber": "담당자 식별 대리변수",
+    "Year": "연도 분포 변화·분할 점검 전용",
+    "Sex": "민감 인구통계",
+    "MaritalStatus": "인구통계 대리변수",
+    "Age": "인구통계 및 0값 의미 불명",
+    "AgeOfPolicyHolder": "인구통계 대리변수",
+    "Fault": "책임 판정 시점 불명·사후 판단 위험",
+    "NumberOfSuppliments": "추가자료/변경 발생 시점과 의미 불명",
+    "AddressChange_Claim": "청구 전후 시점 불명",
+    "PoliceReportFiled": "확보 시점 불명",
+    "WitnessPresent": "확인 시점 불명",
+    "DriverRating": "등급 산정 기준 미제공"
+  },
+  "seed": 42,
+  "selection_rule": "검증 AP 최대, 동률이면 검증 상위20% 포집률. test로 재선정하지 않음.",
+  "ap_definition": "average_precision_score: 계단형 PR-AUC(AP), 사다리꼴 적분과 다름",
+  "random_review_expected_capture": 0.20006485084306097,
+  "random_review_expected_lift": 1.0,
+  "shap_max_additivity_error": 1.7763568394002505e-15,
+  "bootstrap_95_fixed_predictions": {
+    "ap": [
+      0.10172798121741475,
+      0.17155373794792914
+    ],
+    "capture_at_20": [
+      0.32094919786096254,
+      0.445750430292599
+    ],
+    "precision_at_20": [
+      0.09238249594813615,
+      0.14100486223662884
+    ]
+  },
+  "temporal_stress": {
+    "heldout_year": 1996,
+    "metrics": {
+      "ap": 0.07316560666875187,
+      "precision": 0.06263656227239621,
+      "recall": 0.40375586854460094,
+      "f1": 0.10844892812105927,
+      "capture_at_20": 0.23943661971830985,
+      "precision_at_20": 0.06242350061199511,
+      "lift_at_20": 1.1965969624355681,
+      "reviewed_count": 817,
+      "captured_count": 51,
+      "positives": 213,
+      "n": 4083,
+      "brier": 0.2056070989750424
+    },
+    "train_n": 8502,
+    "validation_n": 2835,
+    "test_n": 4083,
+    "limitations": "정확한 접수일·연도 의미 미검증. 원 모델 선정에는 1996년 일부 라벨이 포함됨. 독립 미래검증이 아닌 연도별 이동 민감도 참고용"
+  },
+  "elapsed_seconds": 4.3,
+  "score_note": "비보정 모델 점수. 실제 사기 확률 또는 자동 판단으로 사용 금지."
+}

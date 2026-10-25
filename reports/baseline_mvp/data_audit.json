@@ -1,0 +1,79 @@
+{
+  "rows": 15420,
+  "columns": 33,
+  "positive_count": 923,
+  "prevalence": 0.05985732814526589,
+  "null_cells": 0,
+  "duplicate_rows": 0,
+  "duplicate_without_id": 0,
+  "unique_policy": true,
+  "age_zero_count": 320,
+  "claim_month_zero_count": 1,
+  "claim_day_zero_count": 1,
+  "years": {
+    "1994": 6142,
+    "1995": 5195,
+    "1996": 4083
+  },
+  "splits": {
+    "train": {
+      "n": 9252,
+      "positives": 554,
+      "prevalence": 0.05987894509295288
+    },
+    "validation": {
+      "n": 3084,
+      "positives": 184,
+      "prevalence": 0.05966277561608301
+    },
+    "test": {
+      "n": 3084,
+      "positives": 185,
+      "prevalence": 0.05998702983138781
+    }
+  },
+  "features": [
+    "Month",
+    "WeekOfMonth",
+    "DayOfWeek",
+    "Make",
+    "AccidentArea",
+    "DayOfWeekClaimed",
+    "MonthClaimed",
+    "WeekOfMonthClaimed",
+    "PolicyType",
+    "VehicleCategory",
+    "VehiclePrice",
+    "Deductible",
+    "Days_Policy_Accident",
+    "Days_Policy_Claim",
+    "PastNumberOfClaims",
+    "AgeOfVehicle",
+    "AgentType",
+    "NumberOfCars",
+    "BasePolicy"
+  ],
+  "excluded": {
+    "FraudFound_P": "정답 라벨",
+    "PolicyNumber": "식별자·정렬 순서 누수 위험",
+    "RepNumber": "담당자 식별 대리변수",
+    "Year": "연도 분포 변화·분할 점검 전용",
+    "Sex": "민감 인구통계",
+    "MaritalStatus": "인구통계 대리변수",
+    "Age": "인구통계 및 0값 의미 불명",
+    "AgeOfPolicyHolder": "인구통계 대리변수",
+    "Fault": "책임 판정 시점 불명·사후 판단 위험",
+    "NumberOfSuppliments": "추가자료/변경 발생 시점과 의미 불명",
+    "AddressChange_Claim": "청구 전후 시점 불명",
+    "PoliceReportFiled": "확보 시점 불명",
+    "WitnessPresent": "확인 시점 불명",
+    "DriverRating": "등급 산정 기준 미제공"
+  },
+  "split_overlap": false,
+  "data_sha256": "8b6aa59764ef4f8b058598d3e8f325ef3623f52f4b1cd4ef946baebb5ccfa9a6",
+  "leakage": "식별자·판단시점 불명 변수 제외. 나머지 변수도 실제 수집시점 미확인으로 업무 누수 완전 배제 불가.",
+  "model_input_duplicate_rows": 51,
+  "model_input_conflicting_groups": 2,
+  "dev_test_shared_input_groups": 19,
+  "duplicate_note": "동일 입력이 동일 고객·사건을 뜻하지는 않는다. 고객/사건 ID가 없어 독립성 완전 검증 불가."
+}

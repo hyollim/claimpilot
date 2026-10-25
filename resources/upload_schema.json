@@ -1,0 +1,196 @@
+{
+  "schema_version": 1,
+  "columns": [
+    "claim_id",
+    "Month",
+    "WeekOfMonth",
+    "DayOfWeek",
+    "Make",
+    "AccidentArea",
+    "DayOfWeekClaimed",
+    "MonthClaimed",
+    "WeekOfMonthClaimed",
+    "PolicyType",
+    "VehicleCategory",
+    "VehiclePrice",
+    "Deductible",
+    "Days_Policy_Accident",
+    "Days_Policy_Claim",
+    "PastNumberOfClaims",
+    "AgeOfVehicle",
+    "AgentType",
+    "NumberOfCars",
+    "BasePolicy"
+  ],
+  "row_limit": 5000,
+  "max_bytes": 5242880,
+  "id_rule": "영문/숫자 시작 1~64자 영문·숫자·_.-",
+  "numeric": {
+    "WeekOfMonth": "1~5 정수, 누락 허용",
+    "WeekOfMonthClaimed": "1~5 정수, 누락 허용",
+    "Deductible": "0 이상 정수, 누락 허용"
+  },
+  "categorical": "나머지는 128자 이하 문자열. 미관측 범주는 경고 후 모델의 unknown 처리.",
+  "missing": "누락 열은 거부. 값 누락은 __MISSING__. 모든 입력 누락 행과 ID 누락·중복 거부.",
+  "labels": "정답/사기 라벨 열은 허용하지 않음",
+  "categories": {
+    "Month": [
+      "Apr",
+      "Aug",
+      "Dec",
+      "Feb",
+      "Jan",
+      "Jul",
+      "Jun",
+      "Mar",
+      "May",
+      "Nov",
+      "Oct",
+      "Sep"
+    ],
+    "WeekOfMonth": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5"
+    ],
+    "DayOfWeek": [
+      "Friday",
+      "Monday",
+      "Saturday",
+      "Sunday",
+      "Thursday",
+      "Tuesday",
+      "Wednesday"
+    ],
+    "Make": [
+      "Accura",
+      "BMW",
+      "Chevrolet",
+      "Dodge",
+      "Ferrari",
+      "Ford",
+      "Honda",
+      "Jaguar",
+      "Lexus",
+      "Mazda",
+      "Mercury",
+      "Nisson",
+      "Pontiac",
+      "Porche",
+      "Saab",
+      "Saturn",
+      "Toyota",
+      "VW"
+    ],
+    "AccidentArea": [
+      "Rural",
+      "Urban"
+    ],
+    "DayOfWeekClaimed": [
+      "Friday",
+      "Monday",
+      "Saturday",
+      "Sunday",
+      "Thursday",
+      "Tuesday",
+      "Wednesday"
+    ],
+    "MonthClaimed": [
+      "Apr",
+      "Aug",
+      "Dec",
+      "Feb",
+      "Jan",
+      "Jul",
+      "Jun",
+      "Mar",
+      "May",
+      "Nov",
+      "Oct",
+      "Sep"
+    ],
+    "WeekOfMonthClaimed": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5"
+    ],
+    "PolicyType": [
+      "Sedan - All Perils",
+      "Sedan - Collision",
+      "Sedan - Liability",
+      "Sport - All Perils",
+      "Sport - Collision",
+      "Sport - Liability",
+      "Utility - All Perils",
+      "Utility - Collision",
+      "Utility - Liability"
+    ],
+    "VehicleCategory": [
+      "Sedan",
+      "Sport",
+      "Utility"
+    ],
+    "VehiclePrice": [
+      "20000 to 29000",
+      "30000 to 39000",
+      "40000 to 59000",
+      "60000 to 69000",
+      "less than 20000",
+      "more than 69000"
+    ],
+    "Deductible": [
+      "300",
+      "400",
+      "500",
+      "700"
+    ],
+    "Days_Policy_Accident": [
+      "1 to 7",
+      "15 to 30",
+      "8 to 15",
+      "more than 30",
+      "none"
+    ],
+    "Days_Policy_Claim": [
+      "15 to 30",
+      "8 to 15",
+      "more than 30"
+    ],
+    "PastNumberOfClaims": [
+      "1",
+      "2 to 4",
+      "more than 4",
+      "none"
+    ],
+    "AgeOfVehicle": [
+      "2 years",
+      "3 years",
+      "4 years",
+      "5 years",
+      "6 years",
+      "7 years",
+      "more than 7",
+      "new"
+    ],
+    "AgentType": [
+      "External",
+      "Internal"
+    ],
+    "NumberOfCars": [
+      "1 vehicle",
+      "2 vehicles",
+      "3 to 4",
+      "5 to 8",
+      "more than 8"
+    ],
+    "BasePolicy": [
+      "All Perils",
+      "Collision",
+      "Liability"
+    ]
+  }
+}

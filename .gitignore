@@ -17,3 +17,5 @@ reports/*tests*.txt
 reports/pytest.txt
 
 reports/split_manifest.json
+
+data/*.sqlite*
