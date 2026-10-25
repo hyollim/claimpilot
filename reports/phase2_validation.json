@@ -1,0 +1,700 @@
+{
+  "configuration": {
+    "seed": 42,
+    "features": [
+      "Month",
+      "WeekOfMonth",
+      "DayOfWeek",
+      "Make",
+      "AccidentArea",
+      "DayOfWeekClaimed",
+      "MonthClaimed",
+      "WeekOfMonthClaimed",
+      "PolicyType",
+      "VehicleCategory",
+      "VehiclePrice",
+      "Deductible",
+      "Days_Policy_Accident",
+      "Days_Policy_Claim",
+      "PastNumberOfClaims",
+      "AgeOfVehicle",
+      "AgentType",
+      "NumberOfCars",
+      "BasePolicy"
+    ],
+    "feature_count": 19,
+    "data_sha256": "8b6aa59764ef4f8b058598d3e8f325ef3623f52f4b1cd4ef946baebb5ccfa9a6",
+    "raw_input_grouping": true,
+    "split_method": "GroupShuffleSplit seed42, test .2, validation .25 of development",
+    "temporal_split_method": "순수 연도 cutoff: 1994~1995 전체 모집단 stratified validation .25, 1996 전체 holdout; 미래 입력/라벨 기반 과거 표본 선택 없음",
+    "candidates": [
+      {
+        "name": "Logistic Regression C=0.1",
+        "family": "lr",
+        "C": 0.1
+      },
+      {
+        "name": "Logistic Regression C=1.0",
+        "family": "lr",
+        "C": 1.0
+      },
+      {
+        "name": "CatBoost depth=4",
+        "family": "catboost",
+        "depth": 4
+      },
+      {
+        "name": "CatBoost depth=6",
+        "family": "catboost",
+        "depth": 6
+      }
+    ],
+    "lr": {
+      "class_weight": "balanced",
+      "max_iter": 1500,
+      "encoder": "OneHotEncoder handle_unknown=ignore; train fit only"
+    },
+    "catboost": {
+      "iterations": 450,
+      "learning_rate": 0.05,
+      "loss_function": "Logloss",
+      "eval_metric": "PRAUC",
+      "early_stopping_rounds": 60,
+      "thread_count": 4,
+      "allow_writing_files": false
+    },
+    "weight_diagnostic": {
+      "C": 0.1,
+      "class_weights": [
+        "balanced",
+        null
+      ],
+      "split_source": "reports/split_manifest.json"
+    },
+    "top20_rule": "ceil(n*.2), 점수 내림차순 stable 동점 순서. 기존 evaluate와 동일.",
+    "ap_definition": "sklearn average_precision_score; 계단형 AP",
+    "environment": {
+      "python": "3.9.6",
+      "sklearn": "1.6.1",
+      "catboost": "1.2.10",
+      "pandas": "2.3.3",
+      "numpy": "2.0.2",
+      "platform": "macOS-26.6.2-arm64-arm-64bit"
+    },
+    "protected_files_sha256_before": {
+      "reports/metrics.json": "5faa9e129d0c6295bde8f70a2e943018a9d6bb81473b94d79fc1ff1b82d1ac10",
+      "reports/split_manifest.json": "60157d0122f8f2f941eae7569c1459a258e982a3cd3a9875bf7d2c14777737df",
+      "models/selected.joblib": "a1fd383e5c6e8327103ccd1d05e68c243a3e5b7899c0213960b3d8508ef51b86"
+    },
+    "protected_files_sha256_after": {
+      "reports/metrics.json": "5faa9e129d0c6295bde8f70a2e943018a9d6bb81473b94d79fc1ff1b82d1ac10",
+      "reports/split_manifest.json": "60157d0122f8f2f941eae7569c1459a258e982a3cd3a9875bf7d2c14777737df",
+      "models/selected.joblib": "a1fd383e5c6e8327103ccd1d05e68c243a3e5b7899c0213960b3d8508ef51b86"
+    },
+    "existing_artifacts_unchanged": true,
+    "model_artifact_written": false
+  },
+  "split_diagnostics": {
+    "group_evaluation": {
+      "splits": {
+        "train": {
+          "n": 9251,
+          "positives": 565,
+          "prevalence": 0.06107447843476381,
+          "unique_groups": 9221,
+          "years": {
+            "1994": 3651,
+            "1995": 3093,
+            "1996": 2507
+          },
+          "ordered_claim_id_sha256": "3b315c5ef93a8b7e87ade65503c59e0b5cf890e4bf786fa64a8f55e3bcc94cf2"
+        },
+        "validation": {
+          "n": 3086,
+          "positives": 176,
+          "prevalence": 0.057031756318859365,
+          "unique_groups": 3074,
+          "years": {
+            "1994": 1252,
+            "1995": 1045,
+            "1996": 789
+          },
+          "ordered_claim_id_sha256": "b23494767d740342671b2da4b3b7f482815a69f5cd043f244465c83edecfeabe"
+        },
+        "test": {
+          "n": 3083,
+          "positives": 182,
+          "prevalence": 0.05903340901719105,
+          "unique_groups": 3074,
+          "years": {
+            "1994": 1239,
+            "1995": 1057,
+            "1996": 787
+          },
+          "ordered_claim_id_sha256": "85c19fdc1b5abe142499547b87993166b6c19a5d952d12020fd98e5a63436a64"
+        }
+      },
+      "group_intersections": {
+        "train__validation": 0,
+        "train__test": 0,
+        "validation__test": 0,
+        "development__test": 0
+      },
+      "row_intersections": {
+        "train__validation": 0,
+        "train__test": 0,
+        "validation__test": 0
+      },
+      "assigned_rows": 15420
+    },
+    "temporal_independent": {
+      "splits": {
+        "train": {
+          "n": 8502,
+          "positives": 532,
+          "prevalence": 0.06257351211479652,
+          "unique_groups": 8488,
+          "years": {
+            "1994": 4643,
+            "1995": 3859
+          },
+          "ordered_claim_id_sha256": "910c55c280aed654c8d6dcf5e632b0fd47cd2964e0fecdca080954c857023fc2"
+        },
+        "validation": {
+          "n": 2835,
+          "positives": 178,
+          "prevalence": 0.06278659611992946,
+          "unique_groups": 2834,
+          "years": {
+            "1994": 1499,
+            "1995": 1336
+          },
+          "ordered_claim_id_sha256": "8f2d9a1796a61e0af7465c35cfd3d178abc84d746edab24fd10482a76a35baad"
+        },
+        "test": {
+          "n": 4083,
+          "positives": 213,
+          "prevalence": 0.05216752387950037,
+          "unique_groups": 4080,
+          "years": {
+            "1996": 4083
+          },
+          "ordered_claim_id_sha256": "b50afdc0c2ba954072619ee95855797ff1cc1be14fb86708a5509e8fa573d18e"
+        }
+      },
+      "group_intersections": {
+        "train__validation": 11,
+        "train__test": 18,
+        "validation__test": 4,
+        "development__test": 22
+      },
+      "row_intersections": {
+        "train__validation": 0,
+        "train__test": 0,
+        "validation__test": 0
+      },
+      "assigned_rows": 15420
+    },
+    "original_random": {
+      "splits": {
+        "train": {
+          "n": 9252,
+          "positives": 554,
+          "prevalence": 0.05987894509295288,
+          "unique_groups": 9236,
+          "years": {
+            "1994": 3674,
+            "1995": 3111,
+            "1996": 2467
+          },
+          "ordered_claim_id_sha256": "d91e0ff3a26836814300607f7917e011508ff7e46e84c56a72d8cf3ef08291d6"
+        },
+        "validation": {
+          "n": 3084,
+          "positives": 184,
+          "prevalence": 0.05966277561608301,
+          "unique_groups": 3080,
+          "years": {
+            "1994": 1275,
+            "1995": 1041,
+            "1996": 768
+          },
+          "ordered_claim_id_sha256": "068d11622101aaacd7ab48107d624828bc5231a008bcf3bd8cb6c989d41d9d3b"
+        },
+        "test": {
+          "n": 3084,
+          "positives": 185,
+          "prevalence": 0.05998702983138781,
+          "unique_groups": 3084,
+          "years": {
+            "1994": 1193,
+            "1995": 1043,
+            "1996": 848
+          },
+          "ordered_claim_id_sha256": "0ffbf56cd743750151135aadfad445319c163aaf8c11435d0262526ead50cb64"
+        }
+      },
+      "group_intersections": {
+        "train__validation": 12,
+        "train__test": 14,
+        "validation__test": 5,
+        "development__test": 19
+      },
+      "row_intersections": {
+        "train__validation": 0,
+        "train__test": 0,
+        "validation__test": 0
+      },
+      "assigned_rows": 15420
+    }
+  },
+  "group_audit": {
+    "definition": "승인된 19개 입력의 원문 값 조합. 실제 고객/사건 그룹이 아님.",
+    "rows": 15420,
+    "unique_input_groups": 15369,
+    "duplicate_rows": 51,
+    "duplicate_groups": 51,
+    "rows_in_duplicate_groups": 102,
+    "max_group_size": 2,
+    "size_distribution": {
+      "1": 15318,
+      "2": 51
+    },
+    "conflicting_groups": 2,
+    "rows_in_conflicting_groups": 4,
+    "previous_observation": {
+      "duplicate_rows": 51,
+      "conflicting_groups": 2
+    },
+    "previous_observation_matches": true,
+    "grouping_uses_labels": false
+  },
+  "group_evaluation": {
+    "selected_model": "Logistic Regression C=0.1",
+    "selected_candidate_index": 0,
+    "threshold": 0.6108719454492105,
+    "candidates": [
+      {
+        "name": "Logistic Regression C=0.1",
+        "params": {
+          "name": "Logistic Regression C=0.1",
+          "family": "lr",
+          "C": 0.1
+        },
+        "threshold": 0.6108719454492105,
+        "validation": {
+          "ap": 0.12120325326652973,
+          "precision": 0.11126373626373626,
+          "recall": 0.4602272727272727,
+          "f1": 0.17920353982300885,
+          "capture_at_20": 0.36363636363636365,
+          "precision_at_20": 0.10355987055016182,
+          "lift_at_20": 1.8158281847602236,
+          "reviewed_count": 618,
+          "captured_count": 64,
+          "positives": 176,
+          "n": 3086,
+          "brier": 0.218511162396842
+        }
+      },
+      {
+        "name": "Logistic Regression C=1.0",
+        "params": {
+          "name": "Logistic Regression C=1.0",
+          "family": "lr",
+          "C": 1.0
+        },
+        "threshold": 0.6087858431026566,
+        "validation": {
+          "ap": 0.11758875831020431,
+          "precision": 0.1084967320261438,
+          "recall": 0.4715909090909091,
+          "f1": 0.17640807651434645,
+          "capture_at_20": 0.3352272727272727,
+          "precision_at_20": 0.09546925566343042,
+          "lift_at_20": 1.6739666078258313,
+          "reviewed_count": 618,
+          "captured_count": 59,
+          "positives": 176,
+          "n": 3086,
+          "brier": 0.21915655112132135
+        }
+      },
+      {
+        "name": "CatBoost depth=4",
+        "params": {
+          "name": "CatBoost depth=4",
+          "family": "catboost",
+          "depth": 4,
+          "best_iteration": 0
+        },
+        "threshold": 0.4660501556960395,
+        "validation": {
+          "ap": 0.05745876425383356,
+          "precision": 0.05746367239101717,
+          "recall": 0.9886363636363636,
+          "f1": 0.10861423220973783,
+          "capture_at_20": 0.19886363636363635,
+          "precision_at_20": 0.05663430420711974,
+          "lift_at_20": 0.9930310385407473,
+          "reviewed_count": 618,
+          "captured_count": 35,
+          "positives": 176,
+          "n": 3086,
+          "brier": 0.22078199093124404
+        }
+      },
+      {
+        "name": "CatBoost depth=6",
+        "params": {
+          "name": "CatBoost depth=6",
+          "family": "catboost",
+          "depth": 6,
+          "best_iteration": 0
+        },
+        "threshold": 0.4660501556960395,
+        "validation": {
+          "ap": 0.05745876425383356,
+          "precision": 0.05746367239101717,
+          "recall": 0.9886363636363636,
+          "f1": 0.10861423220973783,
+          "capture_at_20": 0.19886363636363635,
+          "precision_at_20": 0.05663430420711974,
+          "lift_at_20": 0.9930310385407473,
+          "reviewed_count": 618,
+          "captured_count": 35,
+          "positives": 176,
+          "n": 3086,
+          "brier": 0.22078199093124404
+        }
+      }
+    ],
+    "selection_rule": "validation AP 최대, 동률이면 validation capture_at_20. test로 재선정하지 않음.",
+    "threshold_rule": "선택된 모델의 validation F1 최대. test에서는 고정.",
+    "test": {
+      "ap": 0.14458448498949453,
+      "precision": 0.12680115273775217,
+      "recall": 0.4835164835164835,
+      "f1": 0.2009132420091324,
+      "capture_at_20": 0.44505494505494503,
+      "precision_at_20": 0.1312803889789303,
+      "lift_at_20": 2.223832083637594,
+      "reviewed_count": 617,
+      "captured_count": 81,
+      "positives": 182,
+      "n": 3083,
+      "brier": 0.2132765880577725
+    },
+    "test_access_after_selection": true,
+    "refit_on_train_plus_validation": false,
+    "test_evaluated_candidates": 1,
+    "model_saved": false,
+    "compare_reference": {
+      "reference_file": "reports/metrics.json",
+      "reference_selected_model": "Logistic Regression C=0.1",
+      "reference_random_test": {
+        "ap": 0.13025453460730044,
+        "precision": 0.10446343779677113,
+        "recall": 0.5945945945945946,
+        "f1": 0.1777059773828756,
+        "capture_at_20": 0.3891891891891892,
+        "precision_at_20": 0.1166936790923825,
+        "lift_at_20": 1.9453151693022033,
+        "reviewed_count": 617,
+        "captured_count": 72,
+        "positives": 185,
+        "n": 3084,
+        "brier": 0.21561476981551622
+      },
+      "delta_vs_reference_random_test": {
+        "ap": 0.01432995038219409,
+        "precision": 0.022337714940981038,
+        "recall": -0.11107811107811111,
+        "f1": 0.0232072646262568,
+        "brier": -0.0023381817577437236,
+        "capture_at_20": 0.05586575586575582,
+        "precision_at_20": 0.014586709886547797,
+        "lift_at_20": 0.2785169143353907
+      },
+      "interpretation": "분할·대상 표본이 달라 성능 향상/통계적 유의성의 증거가 아닌 기술적 비교. 기존 지표는 변경하지 않음."
+    }
+  },
+  "temporal_independent": {
+    "selected_model": "Logistic Regression C=0.1",
+    "selected_candidate_index": 0,
+    "threshold": 0.5175910022526231,
+    "candidates": [
+      {
+        "name": "Logistic Regression C=0.1",
+        "params": {
+          "name": "Logistic Regression C=0.1",
+          "family": "lr",
+          "C": 0.1
+        },
+        "threshold": 0.5175910022526231,
+        "validation": {
+          "ap": 0.13518990663699015,
+          "precision": 0.12404580152671756,
+          "recall": 0.7303370786516854,
+          "f1": 0.21207177814029363,
+          "capture_at_20": 0.398876404494382,
+          "precision_at_20": 0.12522045855379188,
+          "lift_at_20": 1.99438202247191,
+          "reviewed_count": 567,
+          "captured_count": 71,
+          "positives": 178,
+          "n": 2835,
+          "brier": 0.2053800730918736
+        }
+      },
+      {
+        "name": "Logistic Regression C=1.0",
+        "params": {
+          "name": "Logistic Regression C=1.0",
+          "family": "lr",
+          "C": 1.0
+        },
+        "threshold": 0.5097249476560628,
+        "validation": {
+          "ap": 0.13185204026704458,
+          "precision": 0.12208760484622554,
+          "recall": 0.7359550561797753,
+          "f1": 0.20943245403677058,
+          "capture_at_20": 0.4101123595505618,
+          "precision_at_20": 0.12874779541446207,
+          "lift_at_20": 2.050561797752809,
+          "reviewed_count": 567,
+          "captured_count": 73,
+          "positives": 178,
+          "n": 2835,
+          "brier": 0.2055981601501177
+        }
+      },
+      {
+        "name": "CatBoost depth=4",
+        "params": {
+          "name": "CatBoost depth=4",
+          "family": "catboost",
+          "depth": 4,
+          "best_iteration": 0
+        },
+        "threshold": 0.4663914759913232,
+        "validation": {
+          "ap": 0.06318944128247118,
+          "precision": 0.06319171724384148,
+          "recall": 0.9943820224719101,
+          "f1": 0.11883182275931521,
+          "capture_at_20": 0.2247191011235955,
+          "precision_at_20": 0.07054673721340388,
+          "lift_at_20": 1.1235955056179774,
+          "reviewed_count": 567,
+          "captured_count": 40,
+          "positives": 178,
+          "n": 2835,
+          "brier": 0.22148899899002553
+        }
+      },
+      {
+        "name": "CatBoost depth=6",
+        "params": {
+          "name": "CatBoost depth=6",
+          "family": "catboost",
+          "depth": 6,
+          "best_iteration": 0
+        },
+        "threshold": 0.4663914759913232,
+        "validation": {
+          "ap": 0.06318944128247118,
+          "precision": 0.06319171724384148,
+          "recall": 0.9943820224719101,
+          "f1": 0.11883182275931521,
+          "capture_at_20": 0.2247191011235955,
+          "precision_at_20": 0.07054673721340388,
+          "lift_at_20": 1.1235955056179774,
+          "reviewed_count": 567,
+          "captured_count": 40,
+          "positives": 178,
+          "n": 2835,
+          "brier": 0.22148899899002553
+        }
+      }
+    ],
+    "selection_rule": "validation AP 최대, 동률이면 validation capture_at_20. test로 재선정하지 않음.",
+    "threshold_rule": "선택된 모델의 validation F1 최대. test에서는 고정.",
+    "test": {
+      "ap": 0.07316560666875187,
+      "precision": 0.06263656227239621,
+      "recall": 0.40375586854460094,
+      "f1": 0.10844892812105927,
+      "capture_at_20": 0.23943661971830985,
+      "precision_at_20": 0.06242350061199511,
+      "lift_at_20": 1.1965969624355681,
+      "reviewed_count": 817,
+      "captured_count": 51,
+      "positives": 213,
+      "n": 4083,
+      "brier": 0.2056070989750424
+    },
+    "test_access_after_selection": true,
+    "refit_on_train_plus_validation": false,
+    "test_evaluated_candidates": 1,
+    "model_saved": false,
+    "heldout_year": 1996,
+    "selection_years": [
+      1994,
+      1995
+    ],
+    "test_used_for_selection_threshold_or_early_stopping": false,
+    "historical_sampling": {
+      "historical_rows": 11337,
+      "purged_historical_rows": 0,
+      "uses_future_input_to_select_historical_rows": false,
+      "policy": "1994~1995 전체 모집단을 seed42 stratified 75/25 분할. 1996 입력/라벨로 과거 행을 선택하거나 제외하지 않는다. 입력그룹 중복은 평가 후 감사만 수행."
+    },
+    "independence_scope": "이번 실험 내부 모델선정 독립성. 프로젝트 전체 완전 unseen 주장은 아님.",
+    "posthoc_input_group_intersections": {
+      "train__validation": 11,
+      "train__test": 18,
+      "validation__test": 4,
+      "development__test": 22
+    },
+    "compare_reference": {
+      "reference_file": "reports/metrics.json",
+      "reference_selected_model": "Logistic Regression C=0.1",
+      "reference_random_test": {
+        "ap": 0.13025453460730044,
+        "precision": 0.10446343779677113,
+        "recall": 0.5945945945945946,
+        "f1": 0.1777059773828756,
+        "capture_at_20": 0.3891891891891892,
+        "precision_at_20": 0.1166936790923825,
+        "lift_at_20": 1.9453151693022033,
+        "reviewed_count": 617,
+        "captured_count": 72,
+        "positives": 185,
+        "n": 3084,
+        "brier": 0.21561476981551622
+      },
+      "delta_vs_reference_random_test": {
+        "ap": -0.05708892793854857,
+        "precision": -0.04182687552437492,
+        "recall": -0.1908387260499937,
+        "f1": -0.06925704926181633,
+        "brier": -0.010007670840473826,
+        "capture_at_20": -0.14975256947087937,
+        "precision_at_20": -0.05427017848038739,
+        "lift_at_20": -0.7487182068666351
+      },
+      "interpretation": "분할·대상 표본이 달라 성능 향상/통계적 유의성의 증거가 아닌 기술적 비교. 기존 지표는 변경하지 않음."
+    }
+  },
+  "weight_diagnostic": {
+    "purpose": "사전지정 LR C=.1 balanced vs None 진단 비교만 수행. production 선정·조정에 사용하지 않음.",
+    "threshold_rule": "각 모델별 validation F1 최대, test 관측 전 고정",
+    "models": [
+      {
+        "class_weight": "balanced",
+        "C": 0.1,
+        "threshold": 0.5573884366989108,
+        "validation": {
+          "ap": 0.1210134148493682,
+          "precision": 0.11550151975683891,
+          "recall": 0.6195652173913043,
+          "f1": 0.19470538001707943,
+          "capture_at_20": 0.3858695652173913,
+          "precision_at_20": 0.11507293354943274,
+          "lift_at_20": 1.9287224297089705,
+          "reviewed_count": 617,
+          "captured_count": 71,
+          "positives": 184,
+          "n": 3084,
+          "brier": 0.21057438411275717
+        },
+        "test": {
+          "ap": 0.13025453460730044,
+          "precision": 0.10446343779677113,
+          "recall": 0.5945945945945946,
+          "f1": 0.1777059773828756,
+          "capture_at_20": 0.3891891891891892,
+          "precision_at_20": 0.1166936790923825,
+          "lift_at_20": 1.9453151693022033,
+          "reviewed_count": 617,
+          "captured_count": 72,
+          "positives": 185,
+          "n": 3084,
+          "brier": 0.21561476981551622
+        }
+      },
+      {
+        "class_weight": null,
+        "C": 0.1,
+        "threshold": 0.12300934546777038,
+        "validation": {
+          "ap": 0.12570320851435435,
+          "precision": 0.1646586345381526,
+          "recall": 0.22282608695652173,
+          "f1": 0.18937644341801385,
+          "capture_at_20": 0.3858695652173913,
+          "precision_at_20": 0.11507293354943274,
+          "lift_at_20": 1.9287224297089705,
+          "reviewed_count": 617,
+          "captured_count": 71,
+          "positives": 184,
+          "n": 3084,
+          "brier": 0.054290938384154205
+        },
+        "test": {
+          "ap": 0.13912056750792579,
+          "precision": 0.14107883817427386,
+          "recall": 0.1837837837837838,
+          "f1": 0.1596244131455399,
+          "capture_at_20": 0.41621621621621624,
+          "precision_at_20": 0.12479740680713128,
+          "lift_at_20": 2.080406500503745,
+          "reviewed_count": 617,
+          "captured_count": 77,
+          "positives": 185,
+          "n": 3084,
+          "brier": 0.054121414687297455
+        }
+      }
+    ],
+    "production_model_selection": false,
+    "test_delta_none_minus_balanced": {
+      "ap": 0.008866032900625348,
+      "precision": 0.03661540037750273,
+      "recall": -0.41081081081081083,
+      "f1": -0.0180815642373357,
+      "brier": -0.16149335512821877,
+      "capture_at_20": 0.02702702702702703,
+      "precision_at_20": 0.008103727714748779,
+      "lift_at_20": 0.13509133120154182
+    },
+    "reference_balanced_test": {
+      "ap": 0.13025453460730044,
+      "precision": 0.10446343779677113,
+      "recall": 0.5945945945945946,
+      "f1": 0.1777059773828756,
+      "capture_at_20": 0.3891891891891892,
+      "precision_at_20": 0.1166936790923825,
+      "lift_at_20": 1.9453151693022033,
+      "reviewed_count": 617,
+      "captured_count": 72,
+      "positives": 185,
+      "n": 3084,
+      "brier": 0.21561476981551622
+    },
+    "balanced_reproduction_max_abs_error": 0.0
+  },
+  "limitations": [
+    "동일 19개 원문 입력 그룹은 실제 고객/사건 그룹이 아니다. 고객/사건 ID 부재로 실제 독립성·누수 부재를 입증할 수 없다.",
+    "1996은 원래 MVP에서 이미 관측되었다. 프로젝트 단위 완전 unseen 미래검증이 아니다. 이번 실험에서는 1996을 후보선정/threshold/early stopping에 엄격히 사용하지 않는다.",
+    "시간 분할은 Year의 업무 의미와 정확한 접수 시점이 검증되지 않은 연도 이동 평가다.",
+    "시간 실험은 순수 연도 cutoff로 과거 전체 모집단을 유지한다. 시간 split 간 동일 원문 입력 그룹이 존재할 수 있으며 사후 감사 수치만 보고한다. 그룹격리 실험과 별개다.",
+    "작은 고정 후보범위의 단일 seed 평가이며 재학습/표본 불확실성 신뢰구간은 제공하지 않는다. 플랫폼별 CatBoost early stopping 차이 가능.",
+    "가중치 비교는 사전지정 진단뿐이며 test로 새 production 모델을 선정하거나 조정하지 않는다. 기존 selected.joblib과 metrics는 보존한다.",
+    "비보정 모델 점수의 Brier는 참고 진단이며 실제 사기 확률 또는 자동 사기/지급 판단으로 사용하지 않는다.",
+    "무작위 기존 평가와 그룹/시간 평가의 표본 차이로 성능 차이를 인과적 개선으로 해석하지 않는다."
+  ],
+  "elapsed_seconds": 1.805
+}
