@@ -1,0 +1,23 @@
+name: Python 검증
+on:
+  push:
+    branches: [feature/claimpilot-mvp]
+  pull_request:
+  workflow_dispatch:
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+      - run: pip install -r requirements.txt
+      - run: python -m pytest -q
+      - name: 수동 실행 시 실제 데이터 통합 검증
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          python scripts/download_data.py
+          python scripts/train.py
+          python -m pytest -q
