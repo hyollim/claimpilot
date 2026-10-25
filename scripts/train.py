@@ -1,4 +1,6 @@
-"""검증세트에서만 모델·임계값 선정. 최종평가는 잠금 후 1회 산출한다."""
+"""검증세트에서 모델·임계값 선정 후 test 산출. 재실행은 같은 설정 재현용이다.
+최종평가 결과를 보고 튜닝하지 않는다. 물리적 holdout 접근 통제는 미구현이다.
+"""
 from pathlib import Path
 import sys, json, hashlib, time
 ROOT=Path(__file__).resolve().parents[1]; sys.path.insert(0,str(ROOT))
@@ -34,7 +36,15 @@ def main():
        'features':features,'excluded':EXCLUDED,'split_overlap':bool(set(train)&set(val) or set(train)&set(test) or set(val)&set(test)),
        'data_sha256':hashlib.sha256((ROOT/'data/raw/fraud_oracle.csv').read_bytes()).hexdigest(),
        'leakage':'식별자·판단시점 불명 변수 제외. 나머지 변수도 실제 수집시점 미확인으로 업무 누수 완전 배제 불가.'}
+    fingerprint=pd.util.hash_pandas_object(X,index=False).astype(str)
+    audit['model_input_duplicate_rows']=int(X.duplicated().sum())
+    audit['model_input_conflicting_groups']=int(pd.DataFrame({'key':fingerprint,'y':y}).groupby('key').y.nunique().gt(1).sum())
+    audit['dev_test_shared_input_groups']=len(set(fingerprint.iloc[dev]) & set(fingerprint.iloc[test]))
+    audit['duplicate_note']='동일 입력이 동일 고객·사건을 뜻하지는 않는다. 고객/사건 ID가 없어 독립성 완전 검증 불가.'
     write_json('data_audit.json',audit)
+    manifest={'seed':SEED,'data_sha256':audit['data_sha256'],'features':features,
+       'splits':{name:[{'claim_id':int(df.iloc[i].PolicyNumber),'input_hash':fingerprint.iloc[i]} for i in indices] for name,indices in [('train',train),('validation',val),('test',test)]}}
+    write_json('split_manifest.json',manifest)
     dictionary=[]
     for c in df:
         dictionary.append({'column':c,'dtype':str(df[c].dtype),'unique':int(df[c].nunique()),'missing':int(df[c].isna().sum()),
@@ -43,14 +53,14 @@ def main():
     pd.DataFrame(dictionary).to_csv(ROOT/'reports/data_dictionary.csv',index=False)
     eda=[]
     for c in ['BasePolicy','AccidentArea','PastNumberOfClaims','VehiclePrice','Year','Fault']:
-        for value,g in df.groupby(c):
-            eda.append({'feature':c,'value':str(value),'n':len(g),'positives':int(g[TARGET].sum()),'rate':float(g[TARGET].mean()),'scope':'전체 데이터 기술통계, 인과관계 아님'})
+        for value,g in df.iloc[train].groupby(c):
+            eda.append({'feature':c,'value':str(value),'n':len(g),'positives':int(g[TARGET].sum()),'rate':float(g[TARGET].mean()),'scope':'학습 9252건 기술통계, 인과관계 아님'})
     pd.DataFrame(eda).to_csv(ROOT/'reports/eda.csv',index=False)
     print('AUDIT',json.dumps(audit,ensure_ascii=False),flush=True)
     candidates=[]
     # 상수 기준선. 실제 모델과 동일한 holdout 평가.
     baseline=float(y.iloc[train].mean())
-    candidates.append(('무작위 기대값 기준선',None,np.full(len(val),baseline),{}))
+    candidates.append(('상수 점수·고정 동점 순서',None,np.full(len(val),baseline),{}))
     for C in [.1,1.]:
         model=Pipeline([('encode',OneHotEncoder(handle_unknown='ignore')),('clf',LogisticRegression(C=C,class_weight='balanced',max_iter=1500,random_state=SEED))])
         model.fit(X.iloc[train],y.iloc[train]); candidates.append((f'Logistic Regression C={C}',model,model.predict_proba(X.iloc[val])[:,1],{'C':C}))
@@ -61,6 +71,9 @@ def main():
     ranked=sorted(candidates[1:],key=lambda c:(evaluate(y.iloc[val],c[2])['ap'],evaluate(y.iloc[val],c[2])['capture_at_20']),reverse=True)
     selected=ranked[0]; threshold=choose_threshold(y.iloc[val],selected[2]); rows=[]
     # 이 지점 이후에만 final test 점수 조회. 후보 성능은 비교용이며 선정에는 재사용하지 않음.
+    manifest['selected_model']=selected[0]; manifest['threshold']=threshold
+    manifest['selection']='검증 AP 기준 선정. 최종평가 관측 후 파라미터 변경 없이 재현 실행 가능.'
+    write_json('split_manifest.json',manifest)
     for name,model,scores,params in candidates:
         thr=choose_threshold(y.iloc[val],scores)
         test_scores=model.predict_proba(X.iloc[test])[:,1] if model is not None else np.full(len(test),baseline)
@@ -72,7 +85,7 @@ def main():
         values=model.get_feature_importance(Pool(X.iloc[test],cat_features=features),type='ShapValues')
         contributions=values[:,:-1]; bases=values[:,-1]; raw=model.predict(X.iloc[test],prediction_type='RawFormulaVal')
     else:
-        # 線形 모델의 one-hot SHAP는 학습 분포 기대값 기준으로 원래 변수별 합산.
+        # 선형 모델의 one-hot SHAP는 학습 분포 기대값 기준으로 원래 변수별 합산.
         import shap
         encoder=model.named_steps['encode']; clf=model.named_steps['clf']
         background=encoder.transform(X.iloc[train]).mean(axis=0)
@@ -83,7 +96,9 @@ def main():
     explanations={}
     for j,idx in enumerate(test):
         order=np.argsort(-np.abs(contributions[j]))[:8]
-        explanations[str(int(df.iloc[idx].PolicyNumber))]={'base_value':float(bases[j]),'raw_score':float(raw[j]),'factors':[{'feature':features[k],'value':str(X.iloc[idx][features[k]]),'contribution':float(contributions[j,k])} for k in order]}
+        explanations[str(int(df.iloc[idx].PolicyNumber))]={'base_value':float(bases[j]),'raw_score':float(raw[j]),
+            'other_contribution':float(contributions[j].sum()-contributions[j,order].sum()),
+            'factors':[{'feature':features[k],'value':str(X.iloc[idx][features[k]]),'contribution':float(contributions[j,k])} for k in order]}
     write_json('explanations.json',explanations)
     global_shap=pd.DataFrame({'feature':features,'mean_abs_shap':np.abs(contributions).mean(axis=0)}).sort_values('mean_abs_shap',ascending=False)
     global_shap.to_csv(ROOT/'reports/global_shap.csv',index=False)
@@ -107,7 +122,8 @@ def main():
     metrics={'models':rows,'selected_model':selected[0],'threshold':threshold,'split':audit['splits'],'features':features,'excluded_features':EXCLUDED,
        'seed':SEED,'selection_rule':'검증 AP 최대, 동률이면 검증 상위20% 포집률. test로 재선정하지 않음.',
        'ap_definition':'average_precision_score: 계단형 PR-AUC(AP), 사다리꼴 적분과 다름',
-       'shap_max_additivity_error':residual,'bootstrap_95_fixed_predictions':intervals,'temporal_stress':{'heldout_year':int(latest),'metrics':stress_result,'train_n':len(a),'validation_n':len(b),'test_n':len(future),'limitations':'정확한 접수일 미제공·연도 의미 미검증, 연도별 이동 민감도 참고용'},
+       'random_review_expected_capture':float(np.ceil(len(test)*.2)/len(test)),
+       'random_review_expected_lift':1.0,'shap_max_additivity_error':residual,'bootstrap_95_fixed_predictions':intervals,'temporal_stress':{'heldout_year':int(latest),'metrics':stress_result,'train_n':len(a),'validation_n':len(b),'test_n':len(future),'limitations':'정확한 접수일·연도 의미 미검증. 원 모델 선정에는 1996년 일부 라벨이 포함됨. 독립 미래검증이 아닌 연도별 이동 민감도 참고용'},
        'elapsed_seconds':round(time.time()-started,2),'score_note':'비보정 모델 점수. 실제 사기 확률 또는 자동 판단으로 사용 금지.'}
     write_json('metrics.json',metrics)
     print('SELECTED',selected[0],'SHAP ERROR',residual,'SECONDS',metrics['elapsed_seconds'],flush=True)

@@ -71,5 +71,9 @@
   },
   "split_overlap": false,
   "data_sha256": "8b6aa59764ef4f8b058598d3e8f325ef3623f52f4b1cd4ef946baebb5ccfa9a6",
-  "leakage": "식별자·판단시점 불명 변수 제외. 나머지 변수도 실제 수집시점 미확인으로 업무 누수 완전 배제 불가."
+  "leakage": "식별자·판단시점 불명 변수 제외. 나머지 변수도 실제 수집시점 미확인으로 업무 누수 완전 배제 불가.",
+  "model_input_duplicate_rows": 51,
+  "model_input_conflicting_groups": 2,
+  "dev_test_shared_input_groups": 19,
+  "duplicate_note": "동일 입력이 동일 고객·사건을 뜻하지는 않는다. 고객/사건 ID가 없어 독립성 완전 검증 불가."
 }

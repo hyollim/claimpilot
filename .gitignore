@@ -10,3 +10,10 @@ models/*
 .streamlit/secrets.toml
 .env
 *.log
+
+reports/scored_claims.csv
+reports/explanations.json
+reports/*tests*.txt
+reports/pytest.txt
+
+reports/split_manifest.json

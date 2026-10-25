@@ -1,7 +1,7 @@
 {
   "models": [
     {
-      "name": "무작위 기대값 기준선",
+      "name": "상수 점수·고정 동점 순서",
       "params": {},
       "threshold": 0.05987894509295288,
       "validation": {
@@ -235,6 +235,8 @@
   "seed": 42,
   "selection_rule": "검증 AP 최대, 동률이면 검증 상위20% 포집률. test로 재선정하지 않음.",
   "ap_definition": "average_precision_score: 계단형 PR-AUC(AP), 사다리꼴 적분과 다름",
+  "random_review_expected_capture": 0.20006485084306097,
+  "random_review_expected_lift": 1.0,
   "shap_max_additivity_error": 1.7763568394002505e-15,
   "bootstrap_95_fixed_predictions": {
     "ap": [
@@ -269,8 +271,8 @@
     "train_n": 8502,
     "validation_n": 2835,
     "test_n": 4083,
-    "limitations": "정확한 접수일 미제공·연도 의미 미검증, 연도별 이동 민감도 참고용"
+    "limitations": "정확한 접수일·연도 의미 미검증. 원 모델 선정에는 1996년 일부 라벨이 포함됨. 독립 미래검증이 아닌 연도별 이동 민감도 참고용"
   },
-  "elapsed_seconds": 9.19,
+  "elapsed_seconds": 4.3,
   "score_note": "비보정 모델 점수. 실제 사기 확률 또는 자동 판단으로 사용 금지."
 }

@@ -16,8 +16,19 @@ EXCLUDED = {
     'DriverRating': '등급 산정 기준 미제공',
 }
 
+FEATURES = ['Month','WeekOfMonth','DayOfWeek','Make','AccidentArea',
+    'DayOfWeekClaimed','MonthClaimed','WeekOfMonthClaimed','PolicyType',
+    'VehicleCategory','VehiclePrice','Deductible','Days_Policy_Accident',
+    'Days_Policy_Claim','PastNumberOfClaims','AgeOfVehicle','AgentType',
+    'NumberOfCars','BasePolicy']
+
 def feature_columns(df):
-    return [c for c in df.columns if c not in EXCLUDED]
+    """허용 목록 밖의 입력은 검토 없이 모델에 들어갈 수 없다."""
+    unexpected = set(df.columns) - set(FEATURES) - set(EXCLUDED)
+    missing = set(FEATURES) - set(df.columns)
+    if unexpected or missing:
+        raise ValueError(f'스키마 변경: 예상 밖 열={sorted(unexpected)}, 누락 열={sorted(missing)}')
+    return list(FEATURES)
 
 def prepare(df, features):
     """모든 변수를 범주형으로 취급. 코드값에 임의 순서/거리를 부여하지 않는다."""
