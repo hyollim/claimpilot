@@ -20,4 +20,9 @@ jobs:
         run: |
           python scripts/download_data.py
           python scripts/train.py
+          python scripts/prepare_inference.py
+          python scripts/analyze_budget.py
+          python scripts/validate_phase2.py
+          python scripts/calibrate_phase2.py
+          python scripts/evaluate_retrieval.py
           python -m pytest -q
