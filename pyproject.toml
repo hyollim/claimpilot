@@ -2,7 +2,7 @@
 name = "claimpilot"
 version = "0.1.0"
 description = "자동차보험 청구 검토 우선순위 분석 PoC"
-requires-python = ">=3.9"
+requires-python = ">=3.9,<3.13"
 [tool.pytest.ini_options]
 pythonpath = ["."]
 testpaths = ["tests"]

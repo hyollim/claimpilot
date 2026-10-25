@@ -12,10 +12,12 @@
 수치 근거: [metrics.json](reports/metrics.json), [data_audit.json](reports/data_audit.json). [모델 평가](docs/03_모델평가보고서.md)에 95% 구간과 비교 결과를 기록했다.
 
 ## 실행
-프로젝트 루트에서 실행한다. 데이터 이용조건과 다운로드 가능 여부는 [Kaggle 원문](https://www.kaggle.com/datasets/shivamb/vehicle-claim-fraud-detection)을 확인한다.
+Python 3.11을 권장한다(로컬 3.9.6, GitHub Actions 3.11 확인). 고정한 NumPy/Numba 버전 때문에 Python 3.13 이상은 현재 지원하지 않는다. 프로젝트 루트에서 실행한다. 데이터 이용조건과 다운로드 가능 여부는 [Kaggle 원문](https://www.kaggle.com/datasets/shivamb/vehicle-claim-fraud-detection)을 확인한다.
 
 ```bash
-python3 -m venv .venv
+git clone --branch feature/claimpilot-mvp https://github.com/hyollim/claimpilot.git
+cd claimpilot
+python3.11 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 python scripts/download_data.py
